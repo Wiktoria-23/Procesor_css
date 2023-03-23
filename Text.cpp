@@ -24,7 +24,6 @@ void Text::newChar(char input, Text& previous) {
 	counter += 1;
 	current[counter] = '\0';
 	swap(previous, *current);
-	delete current;
 }
 Text::~Text() {
 

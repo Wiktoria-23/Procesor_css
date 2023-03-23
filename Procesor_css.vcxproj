@@ -128,7 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CSSBlock.cpp" />
-    <ClCompile Include="ListNode.cpp" />
     <ClCompile Include="Procesor_css.cpp" />
     <ClCompile Include="Text.cpp" />
   </ItemGroup>

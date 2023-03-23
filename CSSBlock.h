@@ -1,16 +1,14 @@
 #pragma once
 #include "ListNode.h"
+#include "Text.h"
+#define TEXT 1
 
 class CSSBlock {
 private:
-	/*ListNode<Text>* firstSelector;
-	ListNode<Text>* firstAttribute;
-	ListNode<Text>* currentSelector;
-	ListNode<Text>* currentAttribute;*/
+	ListNode<Text> node;
 public:
 	CSSBlock();
-	/*const ListNode<Text>& addSelector();*/
-	void addAttribute();
-	/*const ListNode<Text>& getEmptyNode();*/
+	void addSelectors();
+	void addAttributes();
 	~CSSBlock();
 };
