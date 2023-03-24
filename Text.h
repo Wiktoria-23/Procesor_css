@@ -7,6 +7,7 @@ private:
 public:
 	Text();
 	Text(int length);
+	Text(Text& text);
 	void newChar(char input, Text& previous);
 	~Text();
 };

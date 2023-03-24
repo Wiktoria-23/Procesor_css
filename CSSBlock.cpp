@@ -1,14 +1,20 @@
 #include "CSSBlock.h"
-#include "ListNode.h"
-#include "Text.h"
 
-CSSBlock::CSSBlock() {
-	
+CSSBlock::CSSBlock() : attributeCounter(NULL), selectorCounter(NULL){
+	firstSelector = new ListNode<Text>;
+	firstAtrribute = new ListNode<Text>;
 }
-void CSSBlock::addSelectors() {
+ListNode<Text>* CSSBlock::getFirstSelector() {
+	return firstSelector;
 }
-void CSSBlock::addAttributes() {
-
+ListNode<Text>* CSSBlock::getFirstAttribute() {
+	return firstAtrribute;
+}
+int CSSBlock::getSelectorCounter() {
+	return selectorCounter;
+}
+int CSSBlock::getAttributeCounter() {
+	return attributeCounter;
 }
 CSSBlock::~CSSBlock() {
 

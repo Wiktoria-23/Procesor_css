@@ -5,10 +5,15 @@
 
 class CSSBlock {
 private:
-	ListNode<Text> node;
+	ListNode<Text>* firstSelector;
+	ListNode<Text>* firstAtrribute;
+	int selectorCounter;
+	int attributeCounter;
 public:
 	CSSBlock();
-	void addSelectors();
-	void addAttributes();
+	ListNode<Text>* getFirstSelector();
+	ListNode<Text>* getFirstAttribute();
+	int getSelectorCounter();
+	int getAttributeCounter();
 	~CSSBlock();
 };

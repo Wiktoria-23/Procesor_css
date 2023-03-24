@@ -20,19 +20,20 @@ int main() {
 	char character;
 	programState currentState = GET_SELECTORS;
 	Text input;
-	ListNode<CSSBlock> firstNode;
+	ListNode<CSSBlock> currentNode;
 	while (currentState != NOT_ACTIVE) {
 		character = getchar();
 		if (currentState == GET_SELECTORS) {
-			if (character == SPACE) {
-				/*if (currentNode.getCounter() < T && currentNode.getNextNode() == nullptr) {
-				}*/
+			if (character == COMMA) {
+				ListNode<Text>* newSelector = new ListNode<Text>;
+				*(currentNode.getData()->getFirstSelector()->getLastNode().getData()) = input;
+				currentNode.getData()->getFirstSelector()->getLastNode().setNextNode(newSelector);
 			}
-			else if (character != COMMA) {
-
-			}
-			else if (character != ATTRIBUTE_START) {
+			else if (character != ATTRIBUTE_START && character != SPACE) {
 				input.newChar(character, input);
+			}
+			else if (character == ATTRIBUTE_START) {
+				currentState = GET_ATTRIBUTES;
 			}
 		}
 		else if (currentState == GET_ATTRIBUTES) {

@@ -23,7 +23,14 @@ void Text::newChar(char input, Text& previous) {
 	current->text[counter] = input;
 	counter += 1;
 	current[counter] = '\0';
-	swap(previous, *current);
+	previous = *current;
+}
+Text::Text(Text& text) {
+	this->length = text.length;
+	this->counter = text.counter;
+	for (int i = 0; i < length; i++) {
+		this[i] = text.text[i];
+	}
 }
 Text::~Text() {
 

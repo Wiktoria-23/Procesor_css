@@ -17,7 +17,7 @@ public:
 		data = new type[n];
 	}
 	ListNode(ListNode<type>& previousNode) {
-		ListNode lastNode = getLastNode(previousNode);
+		ListNode lastNode = getLastNode();
 		this->setPreviousNode(&previousNode);
 		lastNode.setNextNode(this);
 	}
@@ -31,15 +31,16 @@ public:
 	int getCounter() {
 		return counter;
 	}
-	const ListNode& getLastNode(const ListNode<type>& firstNode) {
-		if (firstNode.next == nullptr) {
-			return firstNode;
+	ListNode& getLastNode() {
+		if (next == nullptr) {
+			return *this;
 		}
 		else {
-			ListNode tmp = firstNode;
+			ListNode tmp = *this;
 			while (tmp.next != nullptr) {
 				tmp = *(tmp.next);
 			}
+			return tmp;
 		}
 	}
 	virtual ListNode* getNextNode() {
