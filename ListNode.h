@@ -36,11 +36,11 @@ public:
 			return *this;
 		}
 		else {
-			ListNode tmp = *this;
-			while (tmp.next != nullptr) {
-				tmp = *(tmp.next);
+			ListNode* tmp = this;
+			while (tmp->next != nullptr) {
+				tmp = tmp->next;
 			}
-			return tmp;
+			return *tmp;
 		}
 	}
 	virtual ListNode* getNextNode() {

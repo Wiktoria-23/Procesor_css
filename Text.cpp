@@ -25,6 +25,12 @@ void Text::newChar(char input, Text& previous) {
 	current[counter] = '\0';
 	previous = *current;
 }
+void Text::makeEmpty() {
+	Text tmp;
+	swap(this->text, tmp.text);
+	this->counter = 0;
+	this->length = 1;
+}
 Text::Text(Text& text) {
 	this->length = text.length;
 	this->counter = text.counter;

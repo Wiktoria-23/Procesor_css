@@ -6,6 +6,7 @@
 #define ATTRIBUTE_END '}'
 #define SPACE ' '
 #define COMMA ','
+#define NEW_LINE '\n'
 
 enum programState {
 	GET_SELECTORS = 0,
@@ -28,8 +29,9 @@ int main() {
 				ListNode<Text>* newSelector = new ListNode<Text>;
 				*(currentNode.getData()->getFirstSelector()->getLastNode().getData()) = input;
 				currentNode.getData()->getFirstSelector()->getLastNode().setNextNode(newSelector);
+				input.makeEmpty();
 			}
-			else if (character != ATTRIBUTE_START && character != SPACE) {
+			else if (character != ATTRIBUTE_START && character != SPACE && character != NEW_LINE) {
 				input.newChar(character, input);
 			}
 			else if (character == ATTRIBUTE_START) {
@@ -42,7 +44,6 @@ int main() {
 		if (character == ATTRIBUTE_START) {
 			currentState = GET_ATTRIBUTES;
 		}
-		input.newChar(character, input);
 	}
 	return 0;
 }

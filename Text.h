@@ -8,6 +8,7 @@ public:
 	Text();
 	Text(int length);
 	Text(Text& text);
+	void makeEmpty();
 	void newChar(char input, Text& previous);
 	~Text();
 };
