@@ -27,8 +27,8 @@ int main() {
 		if (currentState == GET_SELECTORS) {
 			if (character == COMMA) {
 				ListNode<Text>* newSelector = new ListNode<Text>;
-				*(currentNode.getData()->getFirstSelector()->getLastNode().getData()) = input;
-				currentNode.getData()->getFirstSelector()->getLastNode().setNextNode(newSelector);
+				*(currentNode.getData()->getFirstSelector()->getLastNode()->getData()) = input;
+				currentNode.getData()->getFirstSelector()->getLastNode()->setNextNode(newSelector);
 				input.makeEmpty();
 			}
 			else if (character != ATTRIBUTE_START && character != SPACE && character != NEW_LINE) {
