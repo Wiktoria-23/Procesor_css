@@ -46,6 +46,7 @@ public:
 	}
 	void setNextNode(ListNode* nextNode) {
 		this->next = nextNode;
+		nextNode->setPreviousNode(this);
 	}
 	~ListNode() {
 
