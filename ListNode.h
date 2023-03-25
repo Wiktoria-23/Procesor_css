@@ -16,11 +16,6 @@ public:
 	ListNode(int n) : previous(nullptr), next(nullptr), counter(NULL) {
 		data = new type[n];
 	}
-	ListNode(ListNode<type>& previousNode) {
-		ListNode lastNode = getLastNode();
-		this->setPreviousNode(&previousNode);
-		lastNode.setNextNode(this);
-	}
 	ListNode(const ListNode<type>& node) {
 		this->next = node.next;
 		this->previous = node.previous;
@@ -36,11 +31,11 @@ public:
 			return this;
 		}
 		else {
-			/*ListNode tmp = *this;
-			while (tmp.next != nullptr) {
-				tmp = *tmp.next;
+			ListNode* tmp = this;
+			while (tmp->next != nullptr) {
+				tmp = tmp->next;
 			}
-			return tmp;*/
+			return tmp;
 		}
 	}
 	virtual ListNode* getNextNode() {
