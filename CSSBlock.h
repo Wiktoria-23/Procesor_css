@@ -15,5 +15,7 @@ public:
 	ListNode<Text>* getFirstAttribute();
 	int getSelectorCounter();
 	int getAttributeCounter();
+	void incrementSelectorCounter();
+	void incrementAttributeCounter();
 	~CSSBlock();
 };

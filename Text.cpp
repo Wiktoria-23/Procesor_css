@@ -22,7 +22,6 @@ void Text::newChar(char input, Text& previous) {
 	}
 	current->text[counter] = input;
 	counter += 1;
-	current[counter] = '\0';
 	previous = *current;
 }
 void Text::makeEmpty() {
@@ -39,5 +38,5 @@ Text::Text(Text& text) {
 	}
 }
 Text::~Text() {
-
+	delete[] text;
 }

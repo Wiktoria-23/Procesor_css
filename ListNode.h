@@ -48,6 +48,9 @@ public:
 		this->next = nextNode;
 		nextNode->setPreviousNode(this);
 	}
+	void incrementCounter() {
+		counter += 1;
+	}
 	~ListNode() {
 
 	}
