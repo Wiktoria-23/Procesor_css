@@ -25,6 +25,17 @@ enum programState {
 
 using namespace std;
 
+int countSections(ListNode<CSSBlock>* currentNode) {
+	ListNode<CSSBlock>* tmp = currentNode->getFirstNode();
+	int counter = NULL;
+	while (tmp != nullptr) {
+		counter += tmp->getCounter();
+		tmp = tmp->getNextNode();
+	}
+	return counter;
+
+}
+
 bool checkInput(char* input, char toFind) {
 	for (int i = 0; i < SPECIAL_COMMAND_LENGTH; i++) {
 		if (input[i] != toFind) {
@@ -105,7 +116,7 @@ int main() {
 		}
 		else if (currentState == GET_COMMANDS) {
 			if (character == QUESTION_MARK) {
-				cout << "? == " <<
+				cout << "? == " << countSections(&currentNode) << endl;
 			}
 		}
 		if (character == QUESTION_MARK && checkInput(input, QUESTION_MARK)) {

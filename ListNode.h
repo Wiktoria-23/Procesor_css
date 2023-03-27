@@ -38,7 +38,19 @@ public:
 			return tmp;
 		}
 	}
-	virtual ListNode* getNextNode() {
+	ListNode* getFirstNode() {
+		if (previous == nullptr) {
+			return this;
+		}
+		else {
+			ListNode* tmp = this;
+			while (tmp->previous != nullptr) {
+				tmp = tmp->previous;
+			}
+			return tmp;
+		}
+	}
+	ListNode* getNextNode() {
 		return next;
 	}
 	void setPreviousNode(ListNode* previousNode) {
