@@ -18,50 +18,55 @@ enum programState {
 
 using namespace std;
 
-void addSelector(Text& input, ListNode<CSSBlock>& currentNode) {
+int addSelector(char* input, ListNode<CSSBlock>& currentNode, int charactersCount) {
 	ListNode<Text>* newSelector = new ListNode<Text>;
-	*(currentNode.getData()->getFirstSelector()->getLastNode()->getData()) = input;
+	currentNode.getData()->getFirstSelector()->getLastNode()->getData()->changeText(input, charactersCount);
 	currentNode.getData()->getFirstSelector()->getLastNode()->setNextNode(newSelector);
 	currentNode.getData()->incrementSelectorCounter();
-	input.makeEmpty();
+	charactersCount = NULL;
+	return charactersCount;
 }
 
-void addAttribute(Text& input, ListNode<CSSBlock>& currentNode) {
+int addAttribute(char* input, ListNode<CSSBlock>& currentNode, int charactersCount) {
 	ListNode<Text>* newAttribute = new ListNode<Text>;
-	*(currentNode.getData()->getFirstAttribute()->getLastNode()->getData()) = input;
+	currentNode.getData()->getFirstAttribute()->getLastNode()->getData()->changeText(input, charactersCount);
 	currentNode.getData()->getFirstAttribute()->getLastNode()->setNextNode(newAttribute);
 	currentNode.getData()->incrementAttributeCounter();
-	input.makeEmpty();
+	charactersCount = NULL;
+	return charactersCount;
 }
 
 int main() {
 	char character;
 	programState currentState = GET_SELECTORS;
-	Text input;
+	char* input = new char[30];
+	int charactersCount = NULL;
 	ListNode<CSSBlock> currentNode;
 	while (currentState != NOT_ACTIVE) {
 		character = getchar();
 		if (currentState == GET_SELECTORS) {
 			if (character == COMMA) {
-				addSelector(input, currentNode);
+				charactersCount = addSelector(input, currentNode, charactersCount);
 			}
-			else if (character != ATTRIBUTES_START && character != SPACE && character != NEW_LINE) {
-				input.newChar(character, input);
+			else if (character != ATTRIBUTES_START && character != NEW_LINE) {
+				input[charactersCount] = character;
+				charactersCount += 1;
 			}
-			else if (character == ATTRIBUTES_START) {
-				addSelector(input, currentNode);
+			if (character == ATTRIBUTES_START) {
+				charactersCount = addSelector(input, currentNode, charactersCount);
 				currentState = GET_ATTRIBUTES;
 			}
 		}
 		else if (currentState == GET_ATTRIBUTES) {
 			if (character == SEMICOLON || character == ATTRIBUTES_END) {
-				addAttribute(input, currentNode);
+				charactersCount = addAttribute(input, currentNode, charactersCount);
 			}
-			else if (character != ATTRIBUTES_END && character != SPACE && character != NEW_LINE) {
-				input.newChar(character, input);
+			else if (character != ATTRIBUTES_END && character != NEW_LINE) {
+				input[charactersCount] = character;
+				charactersCount += 1;
 			}
-			else if (character == ATTRIBUTES_END) {
-				addAttribute(input, currentNode);
+			if (character == ATTRIBUTES_END) {
+				charactersCount = addAttribute(input, currentNode, charactersCount);
 				currentNode.incrementCounter();
 				currentState = GET_SELECTORS;
 			}

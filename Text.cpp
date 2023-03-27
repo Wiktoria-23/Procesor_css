@@ -30,6 +30,22 @@ void Text::makeEmpty() {
 	this->counter = 0;
 	this->length = 1;
 }
+Text::Text(char* text, int charactersCount) {
+	this->length = charactersCount;
+	this->counter = charactersCount + 1;
+	for (int i = 0; i < charactersCount; i++) {
+		this->text[i] = text[i];
+	}
+}
+void Text::changeText(char* text, int charactersCount) {
+	char* tmp = new char[charactersCount];
+	for (int i = 0; i < charactersCount; i++) {
+		tmp[i] = text[i];
+	}
+	this->text = tmp;
+	this->length = charactersCount;
+	this->counter = charactersCount + 1;
+}
 Text::Text(Text& text) {
 	this->length = text.length;
 	this->counter = text.counter;

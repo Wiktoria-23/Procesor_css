@@ -6,7 +6,7 @@
 class CSSBlock {
 private:
 	ListNode<Text>* firstSelector;
-	ListNode<Text>* firstAtrribute;
+	ListNode<Text>* firstAttribute;
 	int selectorCounter;
 	int attributeCounter;
 public:

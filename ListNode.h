@@ -52,6 +52,6 @@ public:
 		counter += 1;
 	}
 	~ListNode() {
-
+		delete[] data;
 	}
 };
