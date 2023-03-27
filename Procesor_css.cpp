@@ -2,6 +2,7 @@
 #include "Text.h"
 #include "CSSBlock.h"
 #include "ListNode.h"
+#define BUFFER 30
 #define ATTRIBUTES_START '{'
 #define ATTRIBUTES_END '}'
 #define SPACE ' '
@@ -39,7 +40,7 @@ int addAttribute(char* input, ListNode<CSSBlock>& currentNode, int charactersCou
 int main() {
 	char character;
 	programState currentState = GET_SELECTORS;
-	char* input = new char[30];
+	char* input = new char[BUFFER];
 	int charactersCount = NULL;
 	ListNode<CSSBlock> currentNode;
 	while (currentState != NOT_ACTIVE) {
