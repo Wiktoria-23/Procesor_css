@@ -11,6 +11,7 @@ public:
 	Text(char* text, int charactersCount);
 	void changeText(char* text, int charactersCount);
 	void makeEmpty();
+	char* getText();
 	void newChar(char input, Text& previous);
 	~Text();
 };

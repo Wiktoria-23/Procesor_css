@@ -21,7 +21,7 @@ public:
 		this->previous = node.previous;
 	}
 	type* getData() {
-		return data;
+		return data+counter;
 	}
 	int getCounter() {
 		return counter;
