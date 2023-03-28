@@ -7,11 +7,12 @@ private:
 public:
 	Text();
 	Text(int length);
-	Text(Text& text);
+	Text(const Text& text);
 	Text(char* text, int charactersCount);
 	void changeText(char* text, int charactersCount);
 	void makeEmpty();
 	char* getText();
+	int getCounter();
 	void newChar(char input, Text& previous);
 	~Text();
 };

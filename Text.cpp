@@ -14,7 +14,7 @@ Text::Text(int length) : length(length) {
 	text[length - 1] = '\0';
 	counter = length - 1;
 }
-Text::Text(Text& text) {
+Text::Text(const Text& text) {
 	this->length = text.length;
 	this->counter = text.counter;
 	for (int i = 0; i < length; i++) {
@@ -22,8 +22,8 @@ Text::Text(Text& text) {
 	}
 }
 Text::Text(char* text, int charactersCount) {
-	this->length = charactersCount;
-	this->counter = charactersCount + 1;
+	this->length = charactersCount + 1;
+	this->counter = charactersCount;
 	for (int i = 0; i < charactersCount; i++) {
 		this->text[i] = text[i];
 	}
@@ -50,11 +50,14 @@ void Text::changeText(char* text, int charactersCount) {
 		tmp[i] = text[i];
 	}
 	this->text = tmp;
-	this->length = charactersCount;
-	this->counter = charactersCount + 1;
+	this->length = charactersCount - 1;
+	this->counter = charactersCount;
 }
 char* Text::getText() {
 	return this->text;
+}
+int Text::getCounter() {
+	return counter;
 }
 Text::~Text() {
 	delete[] text;

@@ -4,6 +4,7 @@
 #include "ListNode.h"
 #define BUFFER 30
 #define SPECIAL_COMMAND_LENGTH 4
+#define ONE_LETTER 1
 #define ATTRIBUTES_START '{'
 #define ATTRIBUTES_END '}'
 #define SPACE ' '
@@ -43,6 +44,15 @@ bool checkInput(char* input, char toFind) {
 		}
 	}
 	return true;
+}
+
+void checkIfSelectorIsSaved(ListNode<CSSBlock>& currentNode) {
+	int x = currentNode.getData()->getFirstSelector()->getData()->getCounter();
+	if (currentNode.getData()->getFirstSelector()->getData()->getCounter() == 0) {
+		char toWrite[ONE_LETTER];
+		toWrite[0] = '*'; //creating array without \0
+		currentNode.getData()->getFirstSelector()->getData()->changeText(toWrite, ONE_LETTER);
+	}
 }
 
 char* clearInput(char* input, int charactersCount) {
@@ -98,6 +108,7 @@ int main() {
 				charactersCount += 1;
 			}
 			if (character == ATTRIBUTES_START) {
+				checkIfSelectorIsSaved(currentNode);
 				currentState = GET_ATTRIBUTES;
 			}
 		}
@@ -117,6 +128,10 @@ int main() {
 		else if (currentState == GET_COMMANDS) {
 			if (character == QUESTION_MARK) {
 				cout << "? == " << countSections(&currentNode) << endl;
+			}
+			else if (character != NEW_LINE && character != SPACE){
+				input[charactersCount] = character;
+				charactersCount += 1;
 			}
 		}
 		if (character == QUESTION_MARK && checkInput(input, QUESTION_MARK)) {
