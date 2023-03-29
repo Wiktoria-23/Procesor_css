@@ -4,6 +4,8 @@
 #include "ListNode.h"
 #define BUFFER 30
 #define SPECIAL_COMMAND_LENGTH 4
+#define SECOND_ARGUMENT_POSITION 3
+#define THIRD_ARGUMENT_POSITION 5
 #define ONE_LETTER 1
 #define ATTRIBUTES_START '{'
 #define ATTRIBUTES_END '}'
@@ -16,6 +18,10 @@
 #define READ_CSS "****"
 #define QUESTION_MARK '?'
 #define ASTERISK '*'
+#define SELECTOR 'S'
+#define ATTRIBUTE 'A'
+#define DELETE 'D'
+#define ALL '*'
 
 enum programState {
 	GET_SELECTORS = 0,
@@ -25,6 +31,42 @@ enum programState {
 };
 
 using namespace std;
+
+void deleteSection() {
+
+}
+
+void deleteElement() {
+
+}
+
+void getElementName() {
+
+}
+
+void printSelectorFrom(int i, int j) {
+
+}
+
+int countAttributesForSection() {
+
+}
+
+int countSelectorsForSection() {
+
+}
+
+int getNumber(int index, char* arr, int startPoint) {
+	int tmpNumber;
+	int number = NULL;
+	for (int i = startPoint; i < index; i++) {
+		tmpNumber = arr[i] - '0'; //conversion to int
+		for (int j = index - i - 1; j > 0; j--) {
+			tmpNumber *= 10;
+		}
+		number += tmpNumber;
+	}
+}
 
 int countSections(ListNode<CSSBlock>* currentNode) {
 	ListNode<CSSBlock>* tmp = currentNode->getFirstNode();
@@ -37,7 +79,7 @@ int countSections(ListNode<CSSBlock>* currentNode) {
 
 }
 
-bool checkInput(char* input, char toFind) {
+bool checkRepeatingChars(char* input, char toFind) {
 	for (int i = 0; i < SPECIAL_COMMAND_LENGTH; i++) {
 		if (input[i] != toFind) {
 			return false;
@@ -47,7 +89,6 @@ bool checkInput(char* input, char toFind) {
 }
 
 void checkIfSelectorIsSaved(ListNode<CSSBlock>& currentNode) {
-	int x = currentNode.getData()->getFirstSelector()->getData()->getCounter();
 	if (currentNode.getData()->getFirstSelector()->getData()->getCounter() == 0) {
 		char toWrite[ONE_LETTER];
 		toWrite[0] = '*'; //creating array without \0
@@ -60,6 +101,19 @@ char* clearInput(char* input, int charactersCount) {
 		input[i] = SPACE;
 	}
 	return input;
+}
+
+bool checkCommas(char* input, int charactersCount) {
+	int commasCounter = NULL;
+	for (int i = 0; i < charactersCount; i++) {
+		if (input[i] == COMMA) {
+			commasCounter += 1;
+		}
+	}
+	if (commasCounter == 2) {
+		return true;
+	}
+	return false;
 }
 
 int addSelector(char* input, ListNode<CSSBlock>& currentNode, int charactersCount) {
@@ -133,13 +187,66 @@ int main() {
 				input[charactersCount] = character;
 				charactersCount += 1;
 			}
+			else if (checkCommas(input, charactersCount)) {
+				int index = NULL;
+				int number = NULL;
+				char* arr = new char[charactersCount];
+				while (input[index] != COMMA) {
+					if (input[index] > '0' && input[index] < '9') {
+						arr[index] = input[index];
+					}
+					else {
+						break;
+					}
+					index += 1;
+				}
+				if (index == NULL) {
+					char character = input[index];
+				}
+				else {
+					number = getNumber(index, arr, NULL);
+				}
+				if (number > 0) {
+					if (input[SECOND_ARGUMENT_POSITION] == ATTRIBUTE) {
+						if (input[THIRD_ARGUMENT_POSITION] == QUESTION_MARK) {
+							cout << countAttributesForSection();//napisz funkcje
+						}
+						else {
+							getElementName();//napisz funkcje
+							
+						}
+					}
+					else if (input[SECOND_ARGUMENT_POSITION] == SELECTOR) {
+						if (input[THIRD_ARGUMENT_POSITION] == QUESTION_MARK) {
+							cout << countSelectorsForSection();//napisz funkcje
+						}
+						else {
+							int number2 = getNumber(index, input, THIRD_ARGUMENT_POSITION);
+							printSelectorFrom(number, number2);//napisz funkcje
+						}
+					}
+					else if (input[SECOND_ARGUMENT_POSITION] == DELETE) {
+						if (input[THIRD_ARGUMENT_POSITION] == ALL) {
+							deleteSection();//napisz funkcje
+						}
+						else {
+							getElementName();//napisz funkcje
+							deleteElement();//napisz funkcje
+						}
+					}
+				}
+				else {
+					getElementName();//napisz funkcje
+				}
+				delete[] arr;
+			}
 		}
-		if (character == QUESTION_MARK && checkInput(input, QUESTION_MARK)) {
+		if (character == QUESTION_MARK && checkRepeatingChars(input, QUESTION_MARK)) {
 			clearInput(input, charactersCount);
 			charactersCount = NULL;
 			currentState = GET_COMMANDS;
 		}
-		if (character == ASTERISK && checkInput(input, ASTERISK)) {
+		if (character == ASTERISK && checkRepeatingChars(input, ASTERISK)) {
 			clearInput(input, charactersCount);
 			charactersCount = NULL;
 			currentState = GET_SELECTORS;
