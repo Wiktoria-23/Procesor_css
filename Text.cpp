@@ -28,6 +28,9 @@ Text::Text(char* text, int charactersCount) {
 		this->text[i] = text[i];
 	}
 }
+void Text::setChar(char character, int index) {
+	this->text[index] = character;
+}
 void Text::newChar(char input, Text& previous) {
 	length += 1;
 	Text* current = new Text(length);
@@ -37,6 +40,7 @@ void Text::newChar(char input, Text& previous) {
 	current->text[counter] = input;
 	counter += 1;
 	previous = *current;
+	delete current;
 }
 void Text::makeEmpty() {
 	Text tmp;
@@ -44,14 +48,14 @@ void Text::makeEmpty() {
 	this->counter = 0;
 	this->length = 1;
 }
-void Text::changeText(char* text, int charactersCount) {
-	char* tmp = new char[charactersCount];
-	for (int i = 0; i < charactersCount; i++) {
-		tmp[i] = text[i];
+void Text::changeText(Text& text) {
+	Text tmp(text.getLength());
+	for (int i = 0; i < text.getLength(); i++) {
+		tmp.setChar(text[i], i);
 	}
-	this->text = tmp;
-	this->length = charactersCount - 1;
-	this->counter = charactersCount;
+	this->length = text.getLength();
+	this->counter = text.getCounter();
+	this->text = tmp.text;
 }
 char* Text::getText() {
 	return this->text;
@@ -59,6 +63,21 @@ char* Text::getText() {
 int Text::getCounter() {
 	return counter;
 }
+int Text::getLength() {
+	return length;
+}
 Text::~Text() {
-	delete[] text;
+	/*if (text != nullptr) {
+		delete[] text;
+	}*/
+}
+
+std::ostream& operator<< (std::ostream& ostr, Text& text) {
+	for (int i = 0; i < text.getLength(); i++) {
+		ostr << text[i];
+	}
+	return ostr;
+}
+char Text::operator[] (int i) {
+	return this->text[i];
 }
