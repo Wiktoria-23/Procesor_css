@@ -8,6 +8,7 @@
 #define SECOND_ARGUMENT_POSITION 1
 #define THIRD_ARGUMENT_POSITION 3
 #define ONE_LETTER 1
+#define NOT_FOUND -1
 #define ATTRIBUTES_START '{'
 #define ATTRIBUTES_END '}'
 #define NUMBERS_START '0'
@@ -24,6 +25,7 @@
 #define SELECTOR 'S'
 #define ATTRIBUTE 'A'
 #define DELETE 'D'
+#define VALUE 'E'
 #define ALL '*'
 
 using namespace std;
@@ -41,6 +43,75 @@ void deleteSection() {
 
 void deleteElement() {
 
+}
+
+int findLastOccurenceOfAttributeForSelector(ListNode<CSSBlock>& currentNode, MyString& attribute, MyString& selector) {
+	int lastOccurence = NOT_FOUND;
+	int nodeCounter = NULL;
+	ListNode<CSSBlock>* node = currentNode.getFirstNode();
+	while (node != nullptr) {
+		for (int i = 0; i < T; i++) {
+			ListNode<MyString>* selectorNode = currentNode.getFirstNode()->getDataFromIndex(i)->getFirstSelector();
+			while (selectorNode != nullptr) {
+				if (*selectorNode->getData() == selector) {
+					ListNode<Attribute>* attributeNode = currentNode.getFirstNode()->getDataFromIndex(i)->getFirstAttribute();
+					while (attributeNode != nullptr) {
+						if (attributeNode->getData()->getKey() == attribute) {
+							lastOccurence = nodeCounter + i;
+						}
+						attributeNode = attributeNode->getNextNode();
+					}
+				}
+				selectorNode = selectorNode->getNextNode();
+			}
+		}
+		nodeCounter += 1;
+		node = node->getNextNode();
+	}
+	return lastOccurence;
+}
+
+int getNameLength(MyString& input, int counter) {
+	while (input.getCharacter(counter) != COMMA) {
+		if ((input.getCharacter(counter) >= 'a' && input.getCharacter(counter) <= 'z') || (input.getCharacter(counter) >= 'A' && input.getCharacter(counter) <= 'Z')) {
+			counter += 1;
+		}
+		else {
+			counter += 1;
+			break;
+		}
+	}
+	return counter;
+}
+
+int countSelector(MyString& selectorName, ListNode<CSSBlock>& currentNode) {
+	ListNode<CSSBlock>* tmp = currentNode.getFirstNode();
+	int counter = NULL;
+	for (int i = 0; i < T; i++) {
+		ListNode<MyString>* currentSelector = tmp->getDataFromIndex(i)->getFirstSelector();
+		while (currentSelector != nullptr) {
+			if (*currentSelector->getData() == selectorName) {
+				counter += 1;
+			}
+			currentSelector = currentSelector->getNextNode();
+		}
+	}
+	return counter;
+}
+
+int countAttribute(MyString& attributeName, ListNode<CSSBlock>& currentNode) {
+	ListNode<CSSBlock>* tmp = currentNode.getFirstNode();
+	int counter = NULL;
+	for (int i = 0; i < T; i++) {
+		ListNode<Attribute>* currentAttribute = tmp->getDataFromIndex(i)->getFirstAttribute();
+		while (currentAttribute != nullptr) {
+			if (currentAttribute->getData()->getKey() == attributeName) {
+				counter += 1;
+			}
+			currentAttribute = currentAttribute->getNextNode();
+		}
+	}
+	return counter;
 }
 
 bool checkIfSectionExist(ListNode<CSSBlock>& currentNode, int number) {
@@ -72,11 +143,20 @@ MyString& findAttributeValue(MyString& attribute, ListNode<CSSBlock>& currentNod
 	return node->getData()->getValue();
 }
 
-MyString& getElementName(MyString& input, int index) {
-	MyString* elementName = new MyString(input.getLength() - index);
-	for (int i = 0; i < elementName->getLength(); i++) {
-		elementName->setChar(input[i + index], i);
+MyString& findAttributeValueForSelector(ListNode<CSSBlock>& currentNode, MyString& attribute, int lastOccurence) {
+	int index = lastOccurence % T;
+	lastOccurence = floor(lastOccurence / T);
+	ListNode<CSSBlock>* node = currentNode.findNodeByNumber(lastOccurence);
+	MyString& value = findAttributeValue(attribute, *node, index);
+	return value;
+}
+
+MyString& getElementName(MyString& input, int startIndex, int endIndex) {
+	MyString* elementName = new MyString(endIndex - startIndex);
+	for (int i = 0; i < elementName->getLength() - 1; i++) {
+		elementName->setChar(input[i + startIndex], i);
 	}
+	elementName->setChar('\0', elementName->getLength() - 1);
 	return *elementName;
 }
 
@@ -138,12 +218,6 @@ void checkIfSelectorIsSaved(ListNode<CSSBlock>& currentNode) {
 		MyString toWrite(1);
 		toWrite.addCharacter('\0');
 		currentNode.getCurrentIndexData()->getFirstSelector()->getCurrentIndexData()->changeText(toWrite);
-	}
-}
-
-void clearInput(char* input, int charactersCount) {
-	for (int i = 0; i < charactersCount; i++) {
-		input[i] = SPACE;
 	}
 }
 
@@ -257,7 +331,32 @@ int main() {
 						}
 					}
 					if (counter == NULL) {
-						char character = input->getCharacter(counter);
+						counter = getNameLength(*input, counter);
+						if (counter == 1) {
+							char character = input->getCharacter(counter);
+						}
+						else {
+							MyString elementName = getElementName(*input, NULL, counter + 1); //length has to be one char bigger
+							if (input->getCharacter(SECOND_ARGUMENT_POSITION + counter) == ATTRIBUTE) {
+								if (input->getCharacter(THIRD_ARGUMENT_POSITION + counter) == QUESTION_MARK) {
+									cout << elementName << COMMA << ATTRIBUTE << COMMA << QUESTION_MARK << " == " << countAttribute(elementName, currentNode) << endl;
+								}
+							}
+							else if (input->getCharacter(SECOND_ARGUMENT_POSITION + counter) == SELECTOR) {
+								if (input->getCharacter(THIRD_ARGUMENT_POSITION + counter) == QUESTION_MARK) {
+									cout << elementName << COMMA << SELECTOR << COMMA << QUESTION_MARK << " == " << countSelector(elementName, currentNode) << endl;
+								}
+							}
+							else if (input->getCharacter(SECOND_ARGUMENT_POSITION + counter) == VALUE) {
+								int nameLength = getNameLength(*input, counter);
+								MyString attributeName = getElementName(*input, THIRD_ARGUMENT_POSITION + counter, input->getLength());
+								int lastOccurence = findLastOccurenceOfAttributeForSelector(currentNode, attributeName, elementName);
+								if (lastOccurence >= 0) {
+									cout << elementName << COMMA << VALUE << COMMA << attributeName << " == " << findAttributeValueForSelector(currentNode, attributeName, lastOccurence + 1) << endl; //nodes are counted from 0
+								}
+							}
+							input->makeEmpty();
+						}
 					}
 					else {
 						number = getNumber(counter, *input, NULL);
@@ -270,7 +369,7 @@ int main() {
 								}
 							}
 							else {
-								MyString attributeName = getElementName(*input, THIRD_ARGUMENT_POSITION + counter);
+								MyString attributeName = getElementName(*input, THIRD_ARGUMENT_POSITION + counter, input->getLength());
 								if (checkIfAttributeExist(attributeName, currentNode, number)) {
 									cout << number << COMMA << ATTRIBUTE << COMMA << attributeName << " == " << findAttributeValue(attributeName, currentNode, number) << endl;
 								}
@@ -299,9 +398,6 @@ int main() {
 							}
 						}
 						input->makeEmpty();
-					}
-					else {
-						/*MyString elementName = getElementName(*input, );*/
 					}
 				}
 				else if (input->getCharacter(NULL) == QUESTION_MARK) {
