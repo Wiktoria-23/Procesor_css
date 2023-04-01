@@ -13,8 +13,10 @@ public:
 	MyString(char* textToAdd, int length);
 	void addCharacter(char character);
 	void changeText(MyString& otherText);
+	void makeEmpty();
 	int getLength();
 	char* getText();
+	char getCharacter(int index);
 	void setLength(int newLength);
 	void setChar(char character,int index);
 	char operator[](int index);

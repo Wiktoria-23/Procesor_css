@@ -42,11 +42,22 @@ void MyString::changeText(MyString& otherText) {
 		text[i] = otherText[i];
 	}
 }
+void MyString::makeEmpty() {
+	length = 1;
+	char* newText = new char[1];
+	newText[0] = '\0';
+	char* tmp = text;
+	text = newText;
+	delete[] newText;
+}
 int MyString::getLength() {
 	return length;
 }
 char* MyString::getText() {
 	return text;
+}
+char MyString::getCharacter(int index) {
+	return text[index];
 }
 void MyString::setLength(int newLength) {
 	length = newLength;
@@ -65,14 +76,17 @@ std::ostream& operator<< (std::ostream& ostr, MyString& text) {
 }
 MyString& MyString::operator=(MyString& otherString) {
 	length = otherString.getLength();
+	/*if (text != nullptr) {
+		delete[] text;
+	}*/
+	text = new char[length];
 	for (int i = 0; i < length - 1; i++) {
 		text[i] = otherString[i];
 	}
-	text[length] = '\0';
+	text[length - 1] = '\0';
 	return *this;
 }
 MyString::~MyString() {
-	std::cout << "Destruktor " << *this << std::endl;
 	if (text != nullptr) {
 		delete[] text;
 	}

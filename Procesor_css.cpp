@@ -103,7 +103,7 @@ bool checkRepeatingChars(MyString& input, char toFind) {
 }
 
 void checkIfSelectorIsSaved(ListNode<CSSBlock>& currentNode) {
-	if (currentNode.getCurrentIndexData()->getFirstSelector()->getCurrentIndexData()->getLength() == 0) {
+	if (currentNode.getCurrentIndexData()->getFirstSelector()->getCurrentIndexData()->getLength() == 1) {
 		MyString toWrite(1);
 		toWrite.addCharacter('\0');
 		currentNode.getCurrentIndexData()->getFirstSelector()->getCurrentIndexData()->changeText(toWrite);
@@ -130,31 +130,31 @@ bool checkCommas(MyString& input) {
 }
 
 void addSelector(MyString& input, ListNode<CSSBlock>& currentNode) {
-	if (currentNode.getCurrentIndexData()->getFirstSelector()->getLastNode()->getCurrentIndexData()->getLength() != NULL) {
+	if (currentNode.getCurrentIndexData()->getFirstSelector()->getLastNode()->getCurrentIndexData()->getLength() != 1) {
 		ListNode<MyString>* newSelector = new ListNode<MyString>;
 		newSelector->setPreviousNode(currentNode.getCurrentIndexData()->getFirstSelector()->getLastNode());
 		currentNode.getCurrentIndexData()->getFirstSelector()->getLastNode()->setNextNode(newSelector);
 	}
 	currentNode.getCurrentIndexData()->getFirstSelector()->getLastNode()->getData()->changeText(input);
 	currentNode.getCurrentIndexData()->incrementSelectorCounter();
-	/*input.makeEmpty();*/
+	input.makeEmpty();
 }
 
 void addAttribute(MyString& input, ListNode<CSSBlock>& currentNode) {
-	if (currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->getCurrentIndexData()->getLength() != NULL) {
+	if (currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->getCurrentIndexData()->getLength() != 1) {
 		ListNode<MyString>* newAttribute = new ListNode<MyString>;
 		newAttribute->setPreviousNode(currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode());
 		currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->setNextNode(newAttribute);
 	}
 	currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->getData()->changeText(input);
 	currentNode.getCurrentIndexData()->incrementAttributeCounter();
-	/*input.makeEmpty();*/
+	input.makeEmpty();
 }
 
 int main() {
 	char character;
 	programState currentState = GET_SELECTORS;
-	MyString input;
+	MyString* input = new MyString();
 	ListNode<CSSBlock> currentNode(T);
 	while (currentState != NOT_ACTIVE) {
 		character = getchar();
@@ -162,16 +162,16 @@ int main() {
 			currentState = NOT_ACTIVE;
 		}
 		if (currentState == GET_SELECTORS) {
-			if ((character == COMMA || character == ATTRIBUTES_START) && input.getLength() > 0) {
+			if ((character == COMMA || character == ATTRIBUTES_START) && input->getLength() > 1) {
 				if (currentNode.getLength() >= T) {
 					ListNode<CSSBlock>* newNode = new ListNode<CSSBlock>(T);
 					currentNode.setNextNode(newNode);
 					currentNode = *currentNode.getNextNode();
 				}
-				addSelector(input, currentNode);
+				addSelector(*input, currentNode);
 			}
 			else if (character != ATTRIBUTES_START && character != NEW_LINE) {
-				input.addCharacter(character);
+				input->addCharacter(character);
 			}
 			if (character == ATTRIBUTES_START) {
 				checkIfSelectorIsSaved(currentNode);
@@ -179,11 +179,11 @@ int main() {
 			}
 		}
 		else if (currentState == GET_ATTRIBUTES) {
-			if ((character == SEMICOLON || character == ATTRIBUTES_END) && input.getLength() > 0) {
-				addAttribute(input, currentNode);
+			if ((character == SEMICOLON || character == ATTRIBUTES_END) && input->getLength() > 1) {
+				addAttribute(*input, currentNode);
 			}
 			else if (character != ATTRIBUTES_END && character != NEW_LINE) {
-				input.addCharacter(character);
+				input->addCharacter(character);
 			}
 			if (character == ATTRIBUTES_END) {
 				currentNode.incrementCounter();
@@ -192,14 +192,14 @@ int main() {
 		}
 		else if (currentState == GET_COMMANDS) {
 			if (character != NEW_LINE && character != SPACE){
-				input.addCharacter(character);
+				input->addCharacter(character);
 			}
 			if (character == NEW_LINE) {
-				if (checkCommas(input)) {
+				if (checkCommas(*input)) {
 					int number = NULL;
 					int counter = NULL;
-					while (input[counter] != COMMA) {
-						if (input[counter] >= NUMBERS_START && input[counter] <= NUMBERS_END) {//finds chars between 0-9
+					while (input->getCharacter(counter) != COMMA) {
+						if (input->getCharacter(counter) >= NUMBERS_START && input->getCharacter(counter) <= NUMBERS_END) {//finds chars between 0-9
 							counter += 1;
 						}
 						else {
@@ -207,32 +207,32 @@ int main() {
 						}
 					}
 					if (counter == NULL) {
-						char character = input[counter];
+						char character = input->getCharacter(counter);
 					}
 					else {
-						number = getNumber(counter, input, NULL);
+						number = getNumber(counter, *input, NULL);
 					}
 					if (number > 0) {
-						if (input[SECOND_ARGUMENT_POSITION + counter] == ATTRIBUTE) {
-							if (input[THIRD_ARGUMENT_POSITION + counter] == QUESTION_MARK) {
+						if (input->getCharacter(SECOND_ARGUMENT_POSITION + counter) == ATTRIBUTE) {
+							if (input->getCharacter(THIRD_ARGUMENT_POSITION + counter) == QUESTION_MARK) {
 								cout << number << COMMA << ATTRIBUTE << COMMA << QUESTION_MARK << " == " << getAttributesAmountForSection(currentNode, number) << endl;
 							}
 							else {
-								MyString attrubuteName = getElementName(input,THIRD_ARGUMENT_POSITION + counter);
+								/*MyString attrubuteName = getElementName(input,THIRD_ARGUMENT_POSITION + counter);*/
 
 							}
 						}
-						else if (input[SECOND_ARGUMENT_POSITION + counter] == SELECTOR) {
-							if (input[THIRD_ARGUMENT_POSITION + counter] == QUESTION_MARK) {
+						else if (input->getCharacter(SECOND_ARGUMENT_POSITION + counter) == SELECTOR) {
+							if (input->getCharacter(THIRD_ARGUMENT_POSITION + counter) == QUESTION_MARK) {
 								cout << number << COMMA << SELECTOR << COMMA << QUESTION_MARK << " == " << getSelectorsAmountForSection(currentNode, number) << endl;
 							}
 							else {
-								int number2 = getNumber(counter, input, THIRD_ARGUMENT_POSITION + counter);
+								int number2 = getNumber(counter, *input, THIRD_ARGUMENT_POSITION + counter);
 								printSelectorFrom(number, number2, currentNode);//napisz funkcje
 							}
 						}
-						else if (input[SECOND_ARGUMENT_POSITION + counter] == DELETE) {
-							if (input[THIRD_ARGUMENT_POSITION + counter] == ALL) {
+						else if (input->getCharacter(SECOND_ARGUMENT_POSITION + counter) == DELETE) {
+							if (input->getCharacter(THIRD_ARGUMENT_POSITION + counter) == ALL) {
 								deleteSection();//napisz funkcje
 							}
 							else {
@@ -240,24 +240,24 @@ int main() {
 								deleteElement();//napisz funkcje
 							}
 						}
-						/*input.makeEmpty();*/
+						input->makeEmpty();
 					}
 					else {
 						//getElementName();//napisz funkcje
 					}
 				}
-				else if (input[NULL] == QUESTION_MARK) {
+				else if (input->getCharacter(NULL) == QUESTION_MARK) {
 					cout << "? == " << countSections(&currentNode) << endl;
-					/*input.makeEmpty();*/
+					input->makeEmpty();
 				}
 			}
 		}
-		if (character == QUESTION_MARK && checkRepeatingChars(input, QUESTION_MARK)) {
-			/*input.makeEmpty();*/
+		if (character == QUESTION_MARK && checkRepeatingChars(*input, QUESTION_MARK)) {
+			input->makeEmpty();
 			currentState = GET_COMMANDS;
 		}
-		if (character == ASTERISK && checkRepeatingChars(input, ASTERISK)) {
-			/*input.makeEmpty();*/
+		if (character == ASTERISK && checkRepeatingChars(*input, ASTERISK)) {
+			input->makeEmpty();
 			currentState = GET_SELECTORS;
 		}
 	}
