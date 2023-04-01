@@ -86,6 +86,17 @@ MyString& MyString::operator=(MyString& otherString) {
 	text[length - 1] = '\0';
 	return *this;
 }
+bool MyString::operator==(MyString& otherString) {
+	if (length == otherString.length) {
+		for (int i = 0; i < length; i++) {
+			if (this->getText()[i] != otherString[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
 MyString::~MyString() {
 	if (text != nullptr) {
 		delete[] text;

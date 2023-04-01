@@ -41,13 +41,43 @@ void deleteElement() {
 
 }
 
-//MyString& getElementName(MyString& input, int index) {
-//	MyString* elementName = new MyString(input.getLength());
-//	for (int i = index; i < elementName->getLength(); i++) {
-//		elementName[i] = input[i];
-//	}
-//	return *elementName;///?????
-//}
+bool checkIfSectionExist(ListNode<CSSBlock>& currentNode, int number) {
+	if (currentNode.getLastNode()->getCounter() > number - 1) { //counting in array starts from 0
+		return true;
+	}
+	return false;
+}
+
+bool checkIfAttributeExist(MyString& attribute, ListNode<CSSBlock>& currentNode, int index) {
+	ListNode<Attribute>* node = currentNode.getFirstNode()->getDataFromIndex(index - 1)->getFirstAttribute(); //counting in array starts from 0
+	while (node != nullptr) {
+		if (node->getData()->getKey() == attribute) {
+			cout << "Atrybut istnieje" << endl;
+			return true;
+		}
+		node = node->getNextNode();
+	}
+	cout << "Atrybut nie istnieje" << endl;
+	return false;
+}
+
+MyString& findAttributeValue(MyString& attribute, ListNode<CSSBlock>& currentNode, int index) {
+	ListNode<Attribute>* node = currentNode.getFirstNode()->getDataFromIndex(index - 1)->getFirstAttribute();
+	while (true) {
+		if (node->getData()->getKey() == attribute) { //counting in array starts from 0
+			return node->getData()->getValue();
+		}
+		node = node->getNextNode();
+	}
+}
+
+MyString& getElementName(MyString& input, int index) {
+	MyString* elementName = new MyString(input.getLength() - index);
+	for (int i = 0; i < elementName->getLength(); i++) {
+		elementName->setChar(input[i + index], i);
+	}
+	return *elementName;
+}
 
 void printSelectorFrom(int i, int j, ListNode<CSSBlock>& currentNode) {
 	ListNode<CSSBlock>* tmp = currentNode.findNodeByNumberT(i);
@@ -86,7 +116,7 @@ int countSections(ListNode<CSSBlock>* currentNode) {
 	ListNode<CSSBlock>* tmp = currentNode->getFirstNode();
 	int counter = NULL;
 	while (tmp != nullptr) {
-		counter += tmp->getLength();
+		counter += tmp->getCounter();
 		tmp = tmp->getNextNode();
 	}
 	return counter;
@@ -163,7 +193,7 @@ int main() {
 		}
 		if (currentState == GET_SELECTORS) {
 			if ((character == COMMA || character == ATTRIBUTES_START) && input->getLength() > 1) {
-				if (currentNode.getLength() >= T) {
+				if (currentNode.getCounter() >= T) {
 					ListNode<CSSBlock>* newNode = new ListNode<CSSBlock>(T);
 					currentNode.setNextNode(newNode);
 					currentNode = *currentNode.getNextNode();
@@ -215,20 +245,29 @@ int main() {
 					if (number > 0) {
 						if (input->getCharacter(SECOND_ARGUMENT_POSITION + counter) == ATTRIBUTE) {
 							if (input->getCharacter(THIRD_ARGUMENT_POSITION + counter) == QUESTION_MARK) {
-								cout << number << COMMA << ATTRIBUTE << COMMA << QUESTION_MARK << " == " << getAttributesAmountForSection(currentNode, number) << endl;
+								if (checkIfSectionExist(currentNode, number)) {
+									cout << number << COMMA << ATTRIBUTE << COMMA << QUESTION_MARK << " == " << getAttributesAmountForSection(currentNode, number) << endl;
+								}
 							}
 							else {
-								/*MyString attrubuteName = getElementName(input,THIRD_ARGUMENT_POSITION + counter);*/
-
+								MyString attributeName = getElementName(*input, THIRD_ARGUMENT_POSITION + counter);
+								cout << attributeName << endl;
+								if (checkIfAttributeExist(attributeName, currentNode, number) == true) {
+									cout << number << COMMA << ATTRIBUTE << COMMA << attributeName << " == " << findAttributeValue(attributeName, currentNode, number) << endl;
+								}
 							}
 						}
 						else if (input->getCharacter(SECOND_ARGUMENT_POSITION + counter) == SELECTOR) {
 							if (input->getCharacter(THIRD_ARGUMENT_POSITION + counter) == QUESTION_MARK) {
-								cout << number << COMMA << SELECTOR << COMMA << QUESTION_MARK << " == " << getSelectorsAmountForSection(currentNode, number) << endl;
+								if (checkIfSectionExist(currentNode, number)) {
+									cout << number << COMMA << SELECTOR << COMMA << QUESTION_MARK << " == " << getSelectorsAmountForSection(currentNode, number) << endl;
+								}
 							}
 							else {
 								int number2 = getNumber(counter, *input, THIRD_ARGUMENT_POSITION + counter);
-								printSelectorFrom(number, number2, currentNode);//napisz funkcje
+								if (checkIfSectionExist(currentNode, number)) {
+									printSelectorFrom(number, number2, currentNode);//napisz funkcje
+								}
 							}
 						}
 						else if (input->getCharacter(SECOND_ARGUMENT_POSITION + counter) == DELETE) {

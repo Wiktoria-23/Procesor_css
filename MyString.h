@@ -21,5 +21,6 @@ public:
 	void setChar(char character,int index);
 	char operator[](int index);
 	MyString& operator=(MyString& otherString);
+	bool operator==(MyString& otherString);
 	~MyString();
 };

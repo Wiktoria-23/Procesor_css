@@ -29,7 +29,7 @@ public:
 	type* getData() {
 		return data;
 	}
-	int getLength() {
+	int getCounter() {
 		return counter;
 	}
 	ListNode* getLastNode() {
