@@ -1,15 +1,15 @@
 #include "CSSBlock.h"
 
 CSSBlock::CSSBlock() : attributeCounter(NULL), selectorCounter(NULL){
-	firstSelector = new ListNode<Text>;
-	firstAttribute = new ListNode<Text>;
+	firstSelector = new ListNode<MyString>;
+	firstAttribute = new ListNode<MyString>;
 	selectorCounter = 0;
 	attributeCounter = 0;
 }
-ListNode<Text>* CSSBlock::getFirstSelector() {
+ListNode<MyString>* CSSBlock::getFirstSelector() {
 	return firstSelector;
 }
-ListNode<Text>* CSSBlock::getFirstAttribute() {
+ListNode<MyString>* CSSBlock::getFirstAttribute() {
 	return firstAttribute;
 }
 int CSSBlock::getSelectorCounter() {

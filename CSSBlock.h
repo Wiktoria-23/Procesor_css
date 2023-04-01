@@ -1,18 +1,18 @@
 #pragma once
 #include "ListNode.h"
-#include "Text.h"
+#include "MyString.h"
 #define TEXT 1
 
 class CSSBlock {
 private:
-	ListNode<Text>* firstSelector;
-	ListNode<Text>* firstAttribute;
+	ListNode<MyString>* firstSelector;
+	ListNode<MyString>* firstAttribute;
 	int selectorCounter;
 	int attributeCounter;
 public:
 	CSSBlock();
-	ListNode<Text>* getFirstSelector();
-	ListNode<Text>* getFirstAttribute();
+	ListNode<MyString>* getFirstSelector();
+	ListNode<MyString>* getFirstAttribute();
 	int getSelectorCounter();
 	int getAttributeCounter();
 	void incrementSelectorCounter();

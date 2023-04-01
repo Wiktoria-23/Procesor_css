@@ -128,13 +128,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CSSBlock.cpp" />
+    <ClCompile Include="MyString.cpp" />
     <ClCompile Include="Procesor_css.cpp" />
-    <ClCompile Include="Text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CSSBlock.h" />
     <ClInclude Include="ListNode.h" />
-    <ClInclude Include="Text.h" />
+    <ClInclude Include="MyString.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
