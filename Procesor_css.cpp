@@ -15,6 +15,7 @@
 #define SPACE ' '
 #define COMMA ','
 #define NEW_LINE '\n'
+#define TAB '\t'
 #define SEMICOLON ';'
 #define COLON ':'
 #define EMPTY ""
@@ -53,23 +54,22 @@ bool checkIfAttributeExist(MyString& attribute, ListNode<CSSBlock>& currentNode,
 	ListNode<Attribute>* node = currentNode.getFirstNode()->getDataFromIndex(index - 1)->getFirstAttribute(); //counting in array starts from 0
 	while (node != nullptr) {
 		if (node->getData()->getKey() == attribute) {
-			/*cout << "Atrybut istnieje" << endl;*/
 			return true;
 		}
 		node = node->getNextNode();
 	}
-	/*cout << "Atrybut nie istnieje" << endl;*/
 	return false;
 }
 
 MyString& findAttributeValue(MyString& attribute, ListNode<CSSBlock>& currentNode, int index) {
 	ListNode<Attribute>* node = currentNode.getFirstNode()->getDataFromIndex(index - 1)->getFirstAttribute();
-	while (true) {
+	while (node != nullptr) {
 		if (node->getData()->getKey() == attribute) { //counting in array starts from 0
-			return node->getData()->getValue();
+			break;
 		}
 		node = node->getNextNode();
 	}
+	return node->getData()->getValue();
 }
 
 MyString& getElementName(MyString& input, int index) {
@@ -160,7 +160,15 @@ bool checkCommas(MyString& input) {
 	return false;
 }
 
+void checkInput(MyString& input) {
+	if (input.getText()[input.getLength() - 1] == SPACE || input.getText()[input.getLength() - 1] == NEW_LINE || input.getText()[input.getLength() - 1] == TAB) {
+		input.getText()[input.getLength() - 1] = '\0';
+		input.setLength(input.getLength() - 1);
+	}
+}
+
 void addSelector(MyString& input, ListNode<CSSBlock>& currentNode) {
+	checkInput(input);
 	if (currentNode.getCurrentIndexData()->getFirstSelector()->getLastNode()->getCurrentIndexData()->getLength() != 1) {
 		ListNode<MyString>* newSelector = new ListNode<MyString>;
 		newSelector->setPreviousNode(currentNode.getCurrentIndexData()->getFirstSelector()->getLastNode());
@@ -172,6 +180,7 @@ void addSelector(MyString& input, ListNode<CSSBlock>& currentNode) {
 }
 
 void addAttributeKey(MyString& input, ListNode<CSSBlock>& currentNode) {
+	checkInput(input);
 	if (currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->getCurrentIndexData()->getKey().getLength() != 1) {
 		ListNode<Attribute>* newAttribute = new ListNode<Attribute>;
 		newAttribute->setPreviousNode(currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode());
@@ -183,6 +192,7 @@ void addAttributeKey(MyString& input, ListNode<CSSBlock>& currentNode) {
 }
 
 void addAttributeValue(MyString& input, ListNode<CSSBlock>& currentNode) {
+	checkInput(input);
 	currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->getData()->getValue().changeText(input);
 	input.makeEmpty();
 }
@@ -206,7 +216,7 @@ int main() {
 				}
 				addSelector(*input, currentNode);
 			}
-			else if (character != ATTRIBUTES_START && character != NEW_LINE) {
+			else if (character != ATTRIBUTES_START && character != NEW_LINE && character != TAB) {
 				input->addCharacter(character);
 			}
 			if (character == ATTRIBUTES_START) {
@@ -216,12 +226,13 @@ int main() {
 		}
 		else if (currentState == GET_ATTRIBUTES) {
 			if (character == COLON && input->getLength() > 1) {
+
 				addAttributeKey(*input, currentNode);
 			}
 			else if ((character == SEMICOLON || character == ATTRIBUTES_END) && input->getLength() > 1) {
 				addAttributeValue(*input, currentNode);
 			}
-			else if (character != ATTRIBUTES_END && character != NEW_LINE) {
+			else if (character != ATTRIBUTES_END && character != NEW_LINE && character != TAB) {
 				input->addCharacter(character);
 			}
 			if (character == ATTRIBUTES_END) {
@@ -260,7 +271,6 @@ int main() {
 							}
 							else {
 								MyString attributeName = getElementName(*input, THIRD_ARGUMENT_POSITION + counter);
-								/*cout << attributeName << endl;*/
 								if (checkIfAttributeExist(attributeName, currentNode, number)) {
 									cout << number << COMMA << ATTRIBUTE << COMMA << attributeName << " == " << findAttributeValue(attributeName, currentNode, number) << endl;
 								}
@@ -275,7 +285,7 @@ int main() {
 							else {
 								int number2 = getNumber(counter, *input, THIRD_ARGUMENT_POSITION + counter);
 								if (checkIfSectionExist(currentNode, number)) {
-									printSelectorFrom(number, number2, currentNode);//napisz funkcje
+									printSelectorFrom(number, number2, currentNode);
 								}
 							}
 						}
@@ -291,7 +301,7 @@ int main() {
 						input->makeEmpty();
 					}
 					else {
-						//getElementName();//napisz funkcje
+						/*MyString elementName = getElementName(*input, );*/
 					}
 				}
 				else if (input->getCharacter(NULL) == QUESTION_MARK) {

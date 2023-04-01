@@ -69,7 +69,7 @@ char MyString::operator[](int index) {
 	return text[index];
 }
 std::ostream& operator<< (std::ostream& ostr, MyString& text) {
-	for (int i = 0; i < text.getLength(); i++) {
+	for (int i = 0; i < text.getLength() - 1; i++) {
 		ostr << (text.getText())[i];
 	}
 	return ostr;
