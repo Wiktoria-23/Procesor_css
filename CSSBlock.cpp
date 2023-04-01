@@ -2,14 +2,14 @@
 
 CSSBlock::CSSBlock() : attributeCounter(NULL), selectorCounter(NULL){
 	firstSelector = new ListNode<MyString>;
-	firstAttribute = new ListNode<MyString>;
+	firstAttribute = new ListNode<Attribute>;
 	selectorCounter = 0;
 	attributeCounter = 0;
 }
 ListNode<MyString>* CSSBlock::getFirstSelector() {
 	return firstSelector;
 }
-ListNode<MyString>* CSSBlock::getFirstAttribute() {
+ListNode<Attribute>* CSSBlock::getFirstAttribute() {
 	return firstAttribute;
 }
 int CSSBlock::getSelectorCounter() {

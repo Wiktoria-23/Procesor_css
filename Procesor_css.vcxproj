@@ -127,11 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Attribute.cpp" />
     <ClCompile Include="CSSBlock.cpp" />
     <ClCompile Include="MyString.cpp" />
     <ClCompile Include="Procesor_css.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Attribute.h" />
     <ClInclude Include="CSSBlock.h" />
     <ClInclude Include="ListNode.h" />
     <ClInclude Include="MyString.h" />

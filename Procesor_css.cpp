@@ -16,6 +16,7 @@
 #define COMMA ','
 #define NEW_LINE '\n'
 #define SEMICOLON ';'
+#define COLON ':'
 #define EMPTY ""
 #define QUESTION_MARK '?'
 #define ASTERISK '*'
@@ -52,12 +53,12 @@ bool checkIfAttributeExist(MyString& attribute, ListNode<CSSBlock>& currentNode,
 	ListNode<Attribute>* node = currentNode.getFirstNode()->getDataFromIndex(index - 1)->getFirstAttribute(); //counting in array starts from 0
 	while (node != nullptr) {
 		if (node->getData()->getKey() == attribute) {
-			cout << "Atrybut istnieje" << endl;
+			/*cout << "Atrybut istnieje" << endl;*/
 			return true;
 		}
 		node = node->getNextNode();
 	}
-	cout << "Atrybut nie istnieje" << endl;
+	/*cout << "Atrybut nie istnieje" << endl;*/
 	return false;
 }
 
@@ -170,14 +171,19 @@ void addSelector(MyString& input, ListNode<CSSBlock>& currentNode) {
 	input.makeEmpty();
 }
 
-void addAttribute(MyString& input, ListNode<CSSBlock>& currentNode) {
-	if (currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->getCurrentIndexData()->getLength() != 1) {
-		ListNode<MyString>* newAttribute = new ListNode<MyString>;
+void addAttributeKey(MyString& input, ListNode<CSSBlock>& currentNode) {
+	if (currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->getCurrentIndexData()->getKey().getLength() != 1) {
+		ListNode<Attribute>* newAttribute = new ListNode<Attribute>;
 		newAttribute->setPreviousNode(currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode());
 		currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->setNextNode(newAttribute);
 	}
-	currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->getData()->changeText(input);
+	currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->getData()->getKey().changeText(input);
 	currentNode.getCurrentIndexData()->incrementAttributeCounter();
+	input.makeEmpty();
+}
+
+void addAttributeValue(MyString& input, ListNode<CSSBlock>& currentNode) {
+	currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->getData()->getValue().changeText(input);
 	input.makeEmpty();
 }
 
@@ -209,8 +215,11 @@ int main() {
 			}
 		}
 		else if (currentState == GET_ATTRIBUTES) {
-			if ((character == SEMICOLON || character == ATTRIBUTES_END) && input->getLength() > 1) {
-				addAttribute(*input, currentNode);
+			if (character == COLON && input->getLength() > 1) {
+				addAttributeKey(*input, currentNode);
+			}
+			else if ((character == SEMICOLON || character == ATTRIBUTES_END) && input->getLength() > 1) {
+				addAttributeValue(*input, currentNode);
 			}
 			else if (character != ATTRIBUTES_END && character != NEW_LINE) {
 				input->addCharacter(character);
@@ -251,8 +260,8 @@ int main() {
 							}
 							else {
 								MyString attributeName = getElementName(*input, THIRD_ARGUMENT_POSITION + counter);
-								cout << attributeName << endl;
-								if (checkIfAttributeExist(attributeName, currentNode, number) == true) {
+								/*cout << attributeName << endl;*/
+								if (checkIfAttributeExist(attributeName, currentNode, number)) {
 									cout << number << COMMA << ATTRIBUTE << COMMA << attributeName << " == " << findAttributeValue(attributeName, currentNode, number) << endl;
 								}
 							}
