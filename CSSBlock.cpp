@@ -18,13 +18,31 @@ int CSSBlock::getSelectorCounter() {
 int CSSBlock::getAttributeCounter() {
 	return attributeCounter;
 }
+void CSSBlock::deleteAllData() {
+	ListNode<MyString>* tmp = firstSelector->getLastNode();
+	tmp = tmp->deleteAllNextNodes();
+	tmp->getData()->makeEmpty();
+	selectorCounter = 0;
+	ListNode<Attribute>* tmp2 = firstAttribute->getLastNode();//ostatni atrybut nie ma nullptr - problem z usuwaniem atrybutu
+	if (selectorCounter > 0) {
+		tmp2 = tmp2->deleteAllNextNodes();
+		tmp2->getData()->getKey().makeEmpty();
+		tmp2->getData()->getValue().makeEmpty();
+	}
+	attributeCounter = 0;
+}
 void CSSBlock::incrementAttributeCounter() {
 	this->attributeCounter += 1;
 }
 void CSSBlock::incrementSelectorCounter() {
 	this->selectorCounter += 1;
 }
+void CSSBlock::decrementAttributeCounter() {
+	this->attributeCounter -= 1;
+}
 CSSBlock::~CSSBlock() {
+	firstSelector->deleteAllNextNodes();
+	firstAttribute->deleteAllNextNodes();
 	delete firstSelector;
 	delete firstAttribute;
 }

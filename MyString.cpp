@@ -97,6 +97,17 @@ bool MyString::operator==(MyString& otherString) {
 	}
 	return false;
 }
+bool MyString::operator!=(MyString& otherString) {
+	if (length != otherString.length) {
+		return true;
+	}
+	for (int i = 0; i < length; i++) {
+		if (this->getText()[i] != otherString[i]) {
+			return true;
+		}
+	}
+	return false;
+}
 MyString::~MyString() {
 	if (text != nullptr) {
 		delete[] text;

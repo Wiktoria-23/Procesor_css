@@ -11,6 +11,10 @@ MyString& Attribute::getValue() {
 	return *value;
 }
 Attribute::~Attribute() {
-	delete key;
-	delete value;
+	if (key != nullptr) {
+		delete key;
+	}
+	if (value != nullptr) {
+		delete value;
+	}
 }

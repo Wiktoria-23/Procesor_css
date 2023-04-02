@@ -37,12 +37,35 @@ enum programState {
 	NOT_ACTIVE = 3,
 };
 
-void deleteSection() {
-
+void deleteSection(int number, ListNode<CSSBlock>& currentNode) {
+	int index = number % T;
+	currentNode.findNodeByNumberT(number - 1)->getDataFromIndex(index - 1)->deleteAllData(); //nodes and elements in array are counted from 0, not from 1
+	currentNode.decrementCounter();
 }
 
-void deleteElement() {
-
+void deleteElement(int number, MyString& attributeName, ListNode<CSSBlock>& currentNode) {
+	int index = number % T;
+	ListNode<Attribute>* tmp = currentNode.findNodeByNumberT(number - 1)->getDataFromIndex(index - 1)->getFirstAttribute();
+	while (tmp->getData()->getKey() != attributeName) {
+		tmp = tmp->getNextNode();
+	}
+	tmp->deleteNode();
+	CSSBlock* currentBlock = currentNode.findNodeByNumberT(number - 1)->getDataFromIndex(index - 1);
+	currentBlock->decrementAttributeCounter();
+	if (currentBlock->getAttributeCounter() == NULL) {
+		currentBlock->deleteAllData();
+		currentNode.decrementCounter();
+	}
+	if (currentNode.getCounter() == NULL) {
+		if (currentNode.getNextNode() != nullptr) {
+			currentNode = *currentNode.getNextNode();
+			currentNode.getPreviousNode()->deleteNode();
+		}
+		else if (currentNode.getPreviousNode() != nullptr) {
+			currentNode = *currentNode.getPreviousNode();
+			currentNode.getNextNode()->deleteNode();
+		}
+	}
 }
 
 int findLastOccurenceOfAttributeForSelector(ListNode<CSSBlock>& currentNode, MyString& attribute, MyString& selector) {
@@ -50,9 +73,9 @@ int findLastOccurenceOfAttributeForSelector(ListNode<CSSBlock>& currentNode, MyS
 	int nodeCounter = NULL;
 	ListNode<CSSBlock>* node = currentNode.getFirstNode();
 	while (node != nullptr) {
-		for (int i = 0; i < T; i++) {
+		for (int i = 0; i < node->getCounter(); i++) {
 			ListNode<MyString>* selectorNode = currentNode.getFirstNode()->getDataFromIndex(i)->getFirstSelector();
-			while (selectorNode != nullptr) {
+			while (selectorNode != nullptr && node->getData()->getSelectorCounter() != NULL) {
 				if (*selectorNode->getData() == selector) {
 					ListNode<Attribute>* attributeNode = currentNode.getFirstNode()->getDataFromIndex(i)->getFirstAttribute();
 					while (attributeNode != nullptr) {
@@ -87,9 +110,10 @@ int getNameLength(MyString& input, int counter) {
 int countSelector(MyString& selectorName, ListNode<CSSBlock>& currentNode) {
 	ListNode<CSSBlock>* tmp = currentNode.getFirstNode();
 	int counter = NULL;
-	for (int i = 0; i < T; i++) {
-		ListNode<MyString>* currentSelector = tmp->getDataFromIndex(i)->getFirstSelector();
-		while (currentSelector != nullptr) {
+	for (int i = 0; i < currentNode.getCounter(); i++) {
+		CSSBlock* currentBlock = tmp->getDataFromIndex(i);
+		ListNode<MyString>* currentSelector = currentBlock->getFirstSelector();
+		while (currentBlock->getSelectorCounter() != NULL && currentSelector != nullptr) {
 			if (*currentSelector->getData() == selectorName) {
 				counter += 1;
 			}
@@ -102,9 +126,10 @@ int countSelector(MyString& selectorName, ListNode<CSSBlock>& currentNode) {
 int countAttribute(MyString& attributeName, ListNode<CSSBlock>& currentNode) {
 	ListNode<CSSBlock>* tmp = currentNode.getFirstNode();
 	int counter = NULL;
-	for (int i = 0; i < T; i++) {
+	for (int i = 0; i < currentNode.getCounter(); i++) {
+		CSSBlock* currentBlock = tmp->getDataFromIndex(i);
 		ListNode<Attribute>* currentAttribute = tmp->getDataFromIndex(i)->getFirstAttribute();
-		while (currentAttribute != nullptr) {
+		while (currentBlock->getFirstSelector() != 0 && currentAttribute != nullptr) {
 			if (currentAttribute->getData()->getKey() == attributeName) {
 				counter += 1;
 			}
@@ -390,11 +415,13 @@ int main() {
 						}
 						else if (input->getCharacter(SECOND_ARGUMENT_POSITION + counter) == DELETE) {
 							if (input->getCharacter(THIRD_ARGUMENT_POSITION + counter) == ALL) {
-								deleteSection();//napisz funkcje
+								deleteSection(number, currentNode);
+								cout << number << COMMA << DELETE << COMMA << ALL << " == " << "deleted" << endl;
 							}
 							else {
-								//getElementName();//napisz funkcje
-								deleteElement();//napisz funkcje
+								MyString& attributeName = getElementName(*input, THIRD_ARGUMENT_POSITION + counter, input->getLength());
+								deleteElement(number, attributeName, currentNode);
+								cout << number << COMMA << DELETE << COMMA << attributeName << " == " << "deleted" << endl;
 							}
 						}
 						input->makeEmpty();

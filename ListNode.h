@@ -21,6 +21,11 @@ public:
 		this->previous = node.previous;
 	}
 	type* getDataFromIndex(int index) {
+		for (int i = 0; i <= index; i++) {
+			if ((data + i)->getSelectorCounter() == NULL) {
+				index += 1;
+			}
+		}
 		return data + index;
 	}
 	type* getCurrentIndexData() {
@@ -31,6 +36,12 @@ public:
 	}
 	int getCounter() {
 		return counter;
+	}
+	ListNode* getNextNode() {
+		return next;
+	}
+	ListNode* getPreviousNode() {
+		return previous;
 	}
 	ListNode* getLastNode() {
 		if (next == nullptr) {
@@ -58,10 +69,8 @@ public:
 	}
 	ListNode* findNodeByNumberT(int number) {
 		ListNode<type>* tmp = this->getFirstNode();
-		int nodeNumber = floor(number / T);
-		int nodeCounter = 1;
-		while (nodeCounter < nodeNumber) {
-			nodeCounter += 1;
+		while (number > T) {
+			number -= tmp->getCounter();
 			tmp = tmp->getNextNode();
 		}
 		return tmp;
@@ -78,19 +87,43 @@ public:
 		}
 		return tmp;
 	}
-	ListNode* getNextNode() {
-		return next;
-	}
 	void setPreviousNode(ListNode* previousNode) {
 		this->previous = previousNode;
 	}
 	void setNextNode(ListNode* nextNode) {
 		this->next = nextNode;
 	}
+	void setCounter(int number) {
+		counter = number;
+	}
 	void incrementCounter() {
 		counter += 1;
 	}
+	void decrementCounter() {
+		counter -= 1;
+	}
+	ListNode* deleteAllNextNodes() {
+		ListNode<type>* tmp = this->getLastNode();
+		while (tmp->getPreviousNode() != nullptr) {
+			tmp = tmp->getPreviousNode();
+			tmp->getNextNode()->~ListNode();
+		}
+		return tmp; //returns last node left
+	}
+	void deleteNode() {
+		if (this->getPreviousNode() != nullptr) {
+			this->getPreviousNode()->setNextNode(this->getNextNode());
+		}
+		if (this->getNextNode() != nullptr) {
+			this->getNextNode()->setPreviousNode(this->getPreviousNode());
+		}
+		this->~ListNode();
+	}
 	~ListNode() {
-		delete[] data;
+		next = nullptr;
+		previous = nullptr;
+		/*if (data != nullptr) {
+			delete[] data;
+		}*/ //naprawic to, zeby dzialal test trzeci !!!
 	}
 };

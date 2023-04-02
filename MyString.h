@@ -22,5 +22,6 @@ public:
 	char operator[](int index);
 	MyString& operator=(MyString& otherString);
 	bool operator==(MyString& otherString);
+	bool operator!=(MyString& otherString);
 	~MyString();
 };

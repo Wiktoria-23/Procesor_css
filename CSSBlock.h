@@ -16,7 +16,9 @@ public:
 	ListNode<Attribute>* getFirstAttribute();
 	int getSelectorCounter();
 	int getAttributeCounter();
+	void deleteAllData();
 	void incrementSelectorCounter();
 	void incrementAttributeCounter();
+	void decrementAttributeCounter();
 	~CSSBlock();
 };
