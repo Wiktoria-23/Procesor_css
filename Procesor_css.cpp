@@ -3,7 +3,6 @@
 #include "MyString.h"
 #include "CSSBlock.h"
 #include "ListNode.h"
-#define BUFFER 30
 #define SPECIAL_COMMAND_LENGTH 4
 #define SECOND_ARGUMENT_POSITION 1
 #define THIRD_ARGUMENT_POSITION 3
@@ -37,20 +36,40 @@ enum programState {
 	NOT_ACTIVE = 3,
 };
 
+bool checkIfAttributeExist(MyString& attribute, ListNode<CSSBlock>& currentNode, int index) {
+	ListNode<Attribute>* node = currentNode.getFirstNode()->findNodeByNumberT(index)->getDataFromIndex((index - 1) % T)->getFirstAttribute(); //counting in array starts from 0
+	while (node != nullptr) {
+		if (node->getData()->getKey() == attribute) {
+			return true;
+		}
+		node = node->getNextNode();
+	}
+	return false;
+}
+
 void deleteSection(int number, ListNode<CSSBlock>& currentNode) {
-	int index = number % T;
-	currentNode.findNodeByNumberT(number - 1)->getDataFromIndex(index - 1)->deleteAllData(); //nodes and elements in array are counted from 0, not from 1
+	int index = (number - 1) % T;
+	currentNode.findNodeByNumberT(number)->getDataFromIndex(index)->deleteAllData(); //nodes and elements in array are counted from 0, not from 1
 	currentNode.decrementCounter();
 }
 
 void deleteElement(int number, MyString& attributeName, ListNode<CSSBlock>& currentNode) {
-	int index = number % T;
-	ListNode<Attribute>* tmp = currentNode.findNodeByNumberT(number - 1)->getDataFromIndex(index - 1)->getFirstAttribute();
+	int index = (number - 1) % T;
+	if (!checkIfAttributeExist(attributeName, currentNode, number)) {
+		return;
+	}
+	ListNode<Attribute>* tmp = currentNode.findNodeByNumberT(number)->getDataFromIndex(index)->getFirstAttribute();
 	while (tmp->getData()->getKey() != attributeName) {
 		tmp = tmp->getNextNode();
 	}
-	tmp->deleteNode();
-	CSSBlock* currentBlock = currentNode.findNodeByNumberT(number - 1)->getDataFromIndex(index - 1);
+	if (tmp->getNextNode() == nullptr && tmp->getPreviousNode() == nullptr) {
+		tmp->getData()->getKey().changeText(DELETED);
+		tmp->getData()->getValue().changeText(DELETED);
+	}
+	else {
+		tmp->deleteNode();
+	}
+	CSSBlock* currentBlock = currentNode.findNodeByNumberT(number)->getDataFromIndex(index);
 	currentBlock->decrementAttributeCounter();
 	if (currentBlock->getAttributeCounter() == NULL) {
 		currentBlock->deleteAllData();
@@ -68,32 +87,6 @@ void deleteElement(int number, MyString& attributeName, ListNode<CSSBlock>& curr
 	}
 }
 
-int findLastOccurenceOfAttributeForSelector(ListNode<CSSBlock>& currentNode, MyString& attribute, MyString& selector) {
-	int lastOccurence = NOT_FOUND;
-	int nodeCounter = NULL;
-	ListNode<CSSBlock>* node = currentNode.getFirstNode();
-	while (node != nullptr) {
-		for (int i = 0; i < node->getCounter(); i++) {
-			ListNode<MyString>* selectorNode = node->getDataFromIndex(i)->getFirstSelector();
-			while (selectorNode != nullptr && node->getDataFromIndex(i)->getSelectorCounter() != NULL) {
-				if (*selectorNode->getData() == selector) {
-					ListNode<Attribute>* attributeNode = node->getDataFromIndex(i)->getFirstAttribute();
-					while (attributeNode != nullptr) {
-						if (attributeNode->getData()->getKey() == attribute) {
-							lastOccurence = (nodeCounter * T) + i;
-						}
-						attributeNode = attributeNode->getNextNode();
-					}
-				}
-				selectorNode = selectorNode->getNextNode();
-			}
-		}
-		nodeCounter += 1;
-		node = node->getNextNode();
-	}
-	return lastOccurence;
-}
-
 int getNameLength(MyString& input, int counter) {
 	while (input.getCharacter(counter) != COMMA) {
 		counter += 1;
@@ -107,12 +100,14 @@ int countSelector(MyString& selectorName, ListNode<CSSBlock>& currentNode) {
 	while (tmp != nullptr) {
 		for (int i = 0; i < tmp->getCounter(); i++) {
 			CSSBlock* currentBlock = tmp->getDataFromIndex(i);
-			ListNode<MyString>* currentSelector = currentBlock->getFirstSelector();
-			while (currentBlock->getSelectorCounter() != NULL && currentSelector != nullptr) {
-				if (*currentSelector->getData() == selectorName) {
-					counter += 1;
+			if (currentBlock->getSelectorCounter() > NULL) {
+				ListNode<MyString>* currentSelector = currentBlock->getFirstSelector();
+				while (currentSelector != nullptr) {
+					if (*currentSelector->getData() == selectorName) {
+						counter += 1;
+					}
+					currentSelector = currentSelector->getNextNode();
 				}
-				currentSelector = currentSelector->getNextNode();
 			}
 		}
 		tmp = tmp->getNextNode();
@@ -143,17 +138,6 @@ bool checkIfSectionExist(ListNode<CSSBlock>& currentNode, int number) {
 	ListNode<CSSBlock>* tmp = currentNode.getFirstNode()->findNodeByNumberT(number - 1);
 	if (tmp->getCounter() > (number - 1) % T) { //counting in array starts from 0
 		return true;
-	}
-	return false;
-}
-
-bool checkIfAttributeExist(MyString& attribute, ListNode<CSSBlock>& currentNode, int index) {
-	ListNode<Attribute>* node = currentNode.getFirstNode()->findNodeByNumberT(index)->getDataFromIndex((index - 1) % T)->getFirstAttribute(); //counting in array starts from 0
-	while (node != nullptr) {
-		if (node->getData()->getKey() == attribute) {
-			return true;
-		}
-		node = node->getNextNode();
 	}
 	return false;
 }
@@ -289,6 +273,29 @@ void addAttributeValue(MyString& input, ListNode<Attribute>& currentNode) {
 	input.makeEmpty();
 }
 
+void findLastValue(MyString& attributeName, MyString& selectorName, ListNode<CSSBlock>& currentNode) {
+	ListNode<CSSBlock>* tmp = currentNode.getLastNode();
+	while (tmp != nullptr) {
+		for (int i = tmp->getCounter() - 1; i >= 0; i--) {
+			ListNode<MyString>* currentSelector = tmp->getDataFromIndex(i)->getFirstSelector();
+			while (currentSelector != nullptr) {
+				if (*currentSelector->getData() == selectorName) {
+					ListNode<Attribute>* currentAttribute = tmp->getDataFromIndex(i)->getFirstAttribute();
+					while (currentAttribute != nullptr) {
+						if (currentAttribute->getData()->getKey() == attributeName) {
+							cout << selectorName << COMMA << VALUE << COMMA << attributeName << " == " << currentAttribute->getData()->getValue() << endl;
+							return;
+						}
+						currentAttribute = currentAttribute->getNextNode();
+					}
+				}
+				currentSelector = currentSelector->getNextNode();
+			}
+		}
+		tmp = tmp->getPreviousNode();
+	}
+}
+
 void chooseCommandWithName(MyString& input, int counter, ListNode<CSSBlock>& currentNode) {
 	MyString elementName = getElementName(input, NULL, counter + 1); //length has to be one char bigger
 	if (input.getCharacter(SECOND_ARGUMENT_POSITION + counter) == ATTRIBUTE) {
@@ -304,10 +311,7 @@ void chooseCommandWithName(MyString& input, int counter, ListNode<CSSBlock>& cur
 	else if (input.getCharacter(SECOND_ARGUMENT_POSITION + counter) == VALUE) {
 		int nameLength = getNameLength(input, counter);
 		MyString attributeName = getElementName(input, THIRD_ARGUMENT_POSITION + counter, input.getLength());
-		int lastOccurence = findLastOccurenceOfAttributeForSelector(currentNode, attributeName, elementName);
-		if (lastOccurence >= 0) {
-			cout << elementName << COMMA << VALUE << COMMA << attributeName << " == " << findAttributeValue(attributeName, currentNode, lastOccurence + 1) << endl; //function accepts index counted from 1, not 0
-		}
+		findLastValue(attributeName, elementName, currentNode);
 	}
 	input.makeEmpty();
 }
@@ -324,7 +328,7 @@ void chooseCommandWithNumber(MyString& input, int counter, ListNode<CSSBlock>& c
 			if (checkIfAttributeExist(attributeName, currentNode, number)) {
 				cout << number << COMMA << ATTRIBUTE << COMMA << attributeName << " == " << findAttributeValue(attributeName, currentNode, number) << endl;
 			}
-		}//naprawić funkcję
+		}
 	}
 	else if (input.getCharacter(SECOND_ARGUMENT_POSITION + counter) == SELECTOR) {
 		if (input.getCharacter(THIRD_ARGUMENT_POSITION + counter) == QUESTION_MARK) {
@@ -377,7 +381,7 @@ programState getSelectors(char character, MyString& input, ListNode<CSSBlock>* c
 		currentState = GET_ATTRIBUTES;
 	}
 	return currentState;
-}//nie zwraca odpowiedniego wskaźnika na ostatni node
+}
 
 programState getAttributes(char character, MyString& input, ListNode<CSSBlock>* currentNode, programState currentState) {
 	static bool attributeToOverwrite;

@@ -42,6 +42,18 @@ void MyString::changeText(MyString& otherText) {
 		text[i] = otherText[i];
 	}
 }
+void MyString::changeText(const char* otherText) {
+	int length = 0;
+	while (otherText[length] != '\0') {
+		length++;
+	}
+	/*delete[] text;*/
+	text = new char[length + 1];
+	for (int i = 0; i <= length; i++) {
+		this->getText()[i] = otherText[i];
+	}
+	this->getText()[length] = '\0';
+}
 void MyString::makeEmpty() {
 	length = 1;
 	char* newText = new char[1];

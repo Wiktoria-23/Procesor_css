@@ -1,4 +1,5 @@
 #include "CSSBlock.h"
+#define DELETED "DELETED"
 
 CSSBlock::CSSBlock() : attributeCounter(NULL), selectorCounter(NULL){
 	firstSelector = new ListNode<MyString>;
@@ -22,12 +23,13 @@ void CSSBlock::deleteAllData() {
 	ListNode<MyString>* tmp = firstSelector->getLastNode();
 	tmp = tmp->deleteAllNextNodes();
 	tmp->getData()->makeEmpty();
+	tmp->getData()->changeText(DELETED);//poprawiæ usuwanie
 	selectorCounter = 0;
 	ListNode<Attribute>* tmp2 = firstAttribute->getLastNode();//ostatni atrybut nie ma nullptr - problem z usuwaniem atrybutu
 	if (selectorCounter > 0) {
 		tmp2 = tmp2->deleteAllNextNodes();
-		tmp2->getData()->getKey().makeEmpty();
-		tmp2->getData()->getValue().makeEmpty();
+		tmp2->getData()->getKey().changeText(DELETED);
+		tmp2->getData()->getValue().changeText(DELETED);
 	}
 	attributeCounter = 0;
 }

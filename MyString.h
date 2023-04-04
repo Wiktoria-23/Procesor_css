@@ -13,6 +13,7 @@ public:
 	MyString(char* textToAdd, int length);
 	void addCharacter(char character);
 	void changeText(MyString& otherText);
+	void changeText(const char* otherText);
 	void makeEmpty();
 	int getLength();
 	char* getText();

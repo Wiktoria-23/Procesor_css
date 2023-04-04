@@ -2,6 +2,7 @@
 #define T 8
 #define TEXT 1
 #include <iostream>
+#define DELETED "DELETED"
 
 template <typename type> class ListNode {
 private:
@@ -21,8 +22,8 @@ public:
 		this->previous = node.previous;
 	}
 	type* getDataFromIndex(int index) {
-		for (int i = 0; i <= index; i++) {
-			if ((data + i)->getSelectorCounter() == NULL) {
+		for (int i = 0; i < this->getCounter(); i++) {
+			if ((data + i)->getFirstSelector()->getData()->getText() == DELETED || (data + i)->getAttributeCounter() == NULL) {
 				index += 1;
 			}
 		}
