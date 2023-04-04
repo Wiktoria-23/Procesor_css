@@ -23,7 +23,7 @@ public:
 	}
 	type* getDataFromIndex(int index) {
 		for (int i = 0; i < this->getCounter(); i++) {
-			if ((data + i)->getFirstSelector()->getData()->getText() == DELETED || (data + i)->getAttributeCounter() == NULL) {
+			if ((data + i)->getSelectorCounter() == 0 && (data+i)->getAttributeCounter() == 0) {
 				index += 1;
 			}
 		}

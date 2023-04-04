@@ -109,6 +109,7 @@ bool MyString::operator==(MyString& otherString) {
 	}
 	return false;
 }
+
 bool MyString::operator!=(MyString& otherString) {
 	if (length != otherString.length) {
 		return true;

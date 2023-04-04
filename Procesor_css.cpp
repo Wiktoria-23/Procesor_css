@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <math.h>
+#include <stdlib.h>
 #include "MyString.h"
 #include "CSSBlock.h"
 #include "ListNode.h"
@@ -85,13 +86,14 @@ void deleteElement(int number, MyString& attributeName, ListNode<CSSBlock>& curr
 			currentNode.getNextNode()->deleteNode();
 		}
 	}
+	cout << number << COMMA << DELETE << COMMA << attributeName << " == " << "deleted" << endl;
 }
 
-int getNameLength(MyString& input, int counter) {
-	while (input.getCharacter(counter) != COMMA) {
-		counter += 1;
+int getLength(MyString& input, int index, int startPoint) {
+	while (input.getCharacter(index) != COMMA && input.getCharacter(index) != '\0') {
+		index += 1;
 	}
-	return counter;
+	return index - startPoint;
 }
 
 int countSelector(MyString& selectorName, ListNode<CSSBlock>& currentNode) {
@@ -182,12 +184,12 @@ int getSelectorsAmountForSection(ListNode<CSSBlock>& currentNode, int number) {
 	return tmp->getDataFromIndex(number)->getSelectorCounter(); //indexing starts from 1, not 0
 }
 
-int getNumber(int index, MyString& text, int startPoint) {
+int getNumber(int length, MyString& text, int startPoint) {
 	int tmpNumber;
 	int number = NULL;
-	for (int i = startPoint; i < index + startPoint; i++) {
+	for (int i = startPoint; i < length + startPoint; i++) {
 		tmpNumber = text[i] - '0'; //conversion to int
-		for (int j = startPoint + index - i - 1; j > 0; j--) {
+		for (int j = startPoint + length - i - 1; j > 0; j--) {
 			tmpNumber *= 10;
 		}
 		number += tmpNumber;
@@ -309,7 +311,7 @@ void chooseCommandWithName(MyString& input, int counter, ListNode<CSSBlock>& cur
 		}
 	}
 	else if (input.getCharacter(SECOND_ARGUMENT_POSITION + counter) == VALUE) {
-		int nameLength = getNameLength(input, counter);
+		int nameLength = getLength(input, counter, THIRD_ARGUMENT_POSITION + counter);
 		MyString attributeName = getElementName(input, THIRD_ARGUMENT_POSITION + counter, input.getLength());
 		findLastValue(attributeName, elementName, currentNode);
 	}
@@ -337,7 +339,8 @@ void chooseCommandWithNumber(MyString& input, int counter, ListNode<CSSBlock>& c
 			}
 		}
 		else {
-			int number2 = getNumber(counter, input, THIRD_ARGUMENT_POSITION + counter);
+			int length = getLength(input, THIRD_ARGUMENT_POSITION + counter, THIRD_ARGUMENT_POSITION + counter);
+			int number2 = getNumber(length, input, THIRD_ARGUMENT_POSITION + counter);
 			if (checkIfSectionExist(currentNode, number)) {
 				printSelectorFrom(number, number2, currentNode);
 			}
@@ -351,7 +354,6 @@ void chooseCommandWithNumber(MyString& input, int counter, ListNode<CSSBlock>& c
 		else {
 			MyString& attributeName = getElementName(input, THIRD_ARGUMENT_POSITION + counter, input.getLength());
 			deleteElement(number, attributeName, currentNode);
-			cout << number << COMMA << DELETE << COMMA << attributeName << " == " << "deleted" << endl;
 		}
 	}
 	input.makeEmpty();
@@ -436,7 +438,7 @@ programState getCommands(char character, MyString& input, ListNode<CSSBlock>* cu
 				}
 			}
 			if (counter == NULL) {
-				counter = getNameLength(input, counter);
+				counter = getLength(input, counter, NULL);
 				if (counter == 1) {
 					char character = input.getCharacter(counter);
 				}

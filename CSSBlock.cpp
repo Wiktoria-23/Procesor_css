@@ -26,7 +26,7 @@ void CSSBlock::deleteAllData() {
 	tmp->getData()->changeText(DELETED);//poprawiæ usuwanie
 	selectorCounter = 0;
 	ListNode<Attribute>* tmp2 = firstAttribute->getLastNode();//ostatni atrybut nie ma nullptr - problem z usuwaniem atrybutu
-	if (selectorCounter > 0) {
+	if (attributeCounter > 0) {
 		tmp2 = tmp2->deleteAllNextNodes();
 		tmp2->getData()->getKey().changeText(DELETED);
 		tmp2->getData()->getValue().changeText(DELETED);
