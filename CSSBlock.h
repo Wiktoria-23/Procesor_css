@@ -16,6 +16,7 @@ public:
 	ListNode<Attribute>* getFirstAttribute();
 	int getSelectorCounter();
 	int getAttributeCounter();
+	void setFirstAttribute(ListNode<Attribute>* newFirstAttribute);
 	void deleteAllData();
 	void incrementSelectorCounter();
 	void incrementAttributeCounter();

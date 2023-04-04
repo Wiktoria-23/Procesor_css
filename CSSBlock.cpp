@@ -19,6 +19,9 @@ int CSSBlock::getSelectorCounter() {
 int CSSBlock::getAttributeCounter() {
 	return attributeCounter;
 }
+void CSSBlock::setFirstAttribute(ListNode<Attribute>* newFirstAttribute) {
+	this->firstAttribute = newFirstAttribute;
+}
 void CSSBlock::deleteAllData() {
 	ListNode<MyString>* tmp = firstSelector->getLastNode();
 	tmp = tmp->deleteAllNextNodes();

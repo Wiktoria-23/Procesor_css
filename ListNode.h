@@ -22,12 +22,19 @@ public:
 		this->previous = node.previous;
 	}
 	type* getDataFromIndex(int index) {
-		for (int i = 0; i < this->getCounter(); i++) {
+		int i = 0;
+		while (i < this->getCounter() && i <= index) {
 			if ((data + i)->getSelectorCounter() == 0 && (data+i)->getAttributeCounter() == 0) {
 				index += 1;
 			}
+			i++;
 		}
-		return data + index;
+		if (index < T) {
+			return data + index;
+		}
+		else {
+			return data;
+		}
 	}
 	type* getCurrentIndexData() {
 		return data + counter;
