@@ -1,7 +1,7 @@
 #include "CSSBlock.h"
 #define DELETED "DELETED"
 
-CSSBlock::CSSBlock() : attributeCounter(NULL), selectorCounter(NULL){
+CSSBlock::CSSBlock() : selectorCounter(NULL), attributeCounter(NULL) {
 	firstSelector = new ListNode<MyString>;
 	firstAttribute = new ListNode<Attribute>;
 	selectorCounter = 0;
@@ -13,10 +13,10 @@ ListNode<MyString>* CSSBlock::getFirstSelector() {
 ListNode<Attribute>* CSSBlock::getFirstAttribute() {
 	return firstAttribute;
 }
-int CSSBlock::getSelectorCounter() {
+int CSSBlock::getSelectorCounter() const {
 	return selectorCounter;
 }
-int CSSBlock::getAttributeCounter() {
+int CSSBlock::getAttributeCounter() const {
 	return attributeCounter;
 }
 void CSSBlock::setFirstAttribute(ListNode<Attribute>* newFirstAttribute) {

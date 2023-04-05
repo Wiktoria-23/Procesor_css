@@ -214,10 +214,9 @@ int getSelectorsAmountForSection(ListNode<CSSBlock>& currentNode, int number) {
 }
 
 int getNumber(int length, MyString& text, int startPoint) {
-	int tmpNumber;
 	int number = NULL;
 	for (int i = startPoint; i < length + startPoint; i++) {
-		tmpNumber = text[i] - '0'; //conversion to int
+		int tmpNumber = text[i] - '0'; //conversion to int
 		for (int j = startPoint + length - i - 1; j > 0; j--) {
 			tmpNumber *= 10;
 		}
@@ -354,7 +353,6 @@ void chooseCommandWithName(MyString& input, int counter, ListNode<CSSBlock>& cur
 		}
 	}
 	else if (input.getCharacter(SECOND_ARGUMENT_POSITION + counter) == VALUE) {
-		int nameLength = getLength(input, counter, THIRD_ARGUMENT_POSITION + counter);
 		MyString attributeName = getElementName(input, THIRD_ARGUMENT_POSITION + counter, input.getLength());
 		findLastValue(attributeName, elementName, currentNode);
 	}
@@ -394,7 +392,7 @@ void chooseCommandWithNumber(MyString& input, int counter, ListNode<CSSBlock>& c
 			deleteSection(number, currentNode);
 		}
 		else {
-			MyString& attributeName = getElementName(input, THIRD_ARGUMENT_POSITION + counter, input.getLength());
+			MyString attributeName = getElementName(input, THIRD_ARGUMENT_POSITION + counter, input.getLength());
 			deleteAttribute(number, attributeName, currentNode);
 		}
 	}
@@ -441,7 +439,7 @@ programState getSelectors(char character, MyString& input, ListNode<CSSBlock>* c
 
 programState getAttributes(char character, MyString& input, ListNode<CSSBlock>* currentNode, programState currentState) {
 	static bool attributeToOverwrite;
-	static MyString attributeName;
+	static MyString* attributeName = new MyString();
 	if (character == COLON && input.getLength() > 1) {
 		input = checkInput(input);
 		if (!checkIfAttributeIsSaved(input, *currentNode)) {
@@ -450,7 +448,7 @@ programState getAttributes(char character, MyString& input, ListNode<CSSBlock>* 
 		}
 		else {
 			attributeToOverwrite = true;
-			attributeName = input;
+			*attributeName = input;
 			input.makeEmpty();
 		}
 	}
@@ -459,7 +457,7 @@ programState getAttributes(char character, MyString& input, ListNode<CSSBlock>* 
 		ListNode<Attribute>* tmp = currentNode->getLastNode()->getCurrentIndexData()->getFirstAttribute()->getLastNode();
 		if (attributeToOverwrite) {
 			tmp = currentNode->getLastNode()->getCurrentIndexData()->getFirstAttribute();
-			while (tmp->getData()->getKey() != attributeName) {
+			while (tmp->getData()->getKey() != *attributeName) {
 				tmp = tmp->getNextNode();
 			}
 		}
@@ -493,12 +491,7 @@ programState getCommands(char character, MyString& input, ListNode<CSSBlock>* cu
 			}
 			if (counter == NULL) {
 				counter = getLength(input, counter, NULL);
-				if (counter == 1) {
-					char character = input.getCharacter(counter);
-				}
-				else {
-					chooseCommandWithName(input, counter, *currentNode);
-				}
+				chooseCommandWithName(input, counter, *currentNode);
 			}
 			else {
 				number = getNumber(counter, input, NULL);
@@ -531,12 +524,11 @@ ListNode<CSSBlock>* checkIfAddNextNode(char character, MyString& input, ListNode
 }
 
 int main() {
-	char character;
 	programState currentState = GET_SELECTORS;
 	MyString* input = new MyString();
 	ListNode<CSSBlock>* currentNode = new ListNode<CSSBlock>(T);
 	while (currentState != NOT_ACTIVE) {
-		character = getchar();
+		char character = getchar();
 		if (character == EOF) {
 			currentState = NOT_ACTIVE;
 		}

@@ -35,7 +35,6 @@ void MyString::addCharacter(char character) {
 }
 void MyString::changeText(MyString& otherText) {
 	length = otherText.length;
-	delete[] text;
 	text = new char[length];
 	text[length - 1] = '\0';
 	for (int i = 0; i < length; i++) {
@@ -43,41 +42,36 @@ void MyString::changeText(MyString& otherText) {
 	}
 }
 void MyString::changeText(const char* otherText) {
-	int length = 0;
-	while (otherText[length] != '\0') {
-		length++;
+	int newLength = 0;
+	while (otherText[newLength] != '\0') {
+		newLength++;
 	}
-	/*delete[] text;*/
-	text = new char[length + 1];
-	for (int i = 0; i <= length; i++) {
+	text = new char[newLength + 1];
+	for (int i = 0; i <= newLength; i++) {
 		this->getText()[i] = otherText[i];
 	}
-	this->getText()[length] = '\0';
+	this->getText()[newLength] = '\0';
 }
 void MyString::makeEmpty() {
 	length = 1;
 	char* newText = new char[1];
 	newText[0] = '\0';
-	char* tmp = text;
 	text = newText;
 	delete[] newText;
 }
-int MyString::getLength() {
+int MyString::getLength() const {
 	return length;
 }
 char* MyString::getText() {
 	return text;
 }
-char MyString::getCharacter(int index) {
+char MyString::getCharacter(int index) const {
 	return text[index];
-}
-void MyString::setLength(int newLength) {
-	length = newLength;
 }
 void MyString::setChar(char character, int index) {
 	text[index] = character;
 }
-char MyString::operator[](int index) {
+char MyString::operator[](int index) const {
 	return text[index];
 }
 std::ostream& operator<< (std::ostream& ostr, MyString& text) {

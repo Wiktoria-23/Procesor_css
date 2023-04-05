@@ -15,12 +15,11 @@ public:
 	void changeText(MyString& otherText);
 	void changeText(const char* otherText);
 	void makeEmpty();
-	int getLength();
+	int getLength() const;
 	char* getText();
-	char getCharacter(int index);
-	void setLength(int newLength);
+	char getCharacter(int index) const;
 	void setChar(char character,int index);
-	char operator[](int index);
+	char operator[](int index) const;
 	MyString& operator=(MyString& otherString);
 	bool operator==(MyString& otherString);
 	bool operator!=(MyString& otherString);

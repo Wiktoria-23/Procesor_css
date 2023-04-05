@@ -14,8 +14,8 @@ public:
 	CSSBlock();
 	ListNode<MyString>* getFirstSelector();
 	ListNode<Attribute>* getFirstAttribute();
-	int getSelectorCounter();
-	int getAttributeCounter();
+	int getSelectorCounter() const;
+	int getAttributeCounter() const;
 	void setFirstAttribute(ListNode<Attribute>* newFirstAttribute);
 	void deleteAllData();
 	void incrementSelectorCounter();

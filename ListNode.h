@@ -46,7 +46,7 @@ public:
 	type* getData() {
 		return data;
 	}
-	int getCounter() {
+	int getCounter() const {
 		return counter;
 	}
 	ListNode* getNextNode() {
