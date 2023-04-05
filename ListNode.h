@@ -22,15 +22,19 @@ public:
 		this->previous = node.previous;
 	}
 	type* getDataFromIndex(int index) {
-		int i = 0;
-		while (i < this->getCounter() && i <= index) {
-			if ((data + i)->getSelectorCounter() == 0 && (data+i)->getAttributeCounter() == 0) {
-				index += 1;
+		int deletedCounter = NULL;
+		int currentIndex = NULL;
+		while (currentIndex != (index + deletedCounter)) {
+			if ((data + currentIndex)->getSelectorCounter() == NULL && (data + currentIndex)->getAttributeCounter() == NULL) {
+				deletedCounter += 1;
 			}
-			i++;
+			currentIndex += 1;
 		}
-		if (index < T) {
-			return data + index;
+		if ((data + currentIndex)->getSelectorCounter() == NULL && (data + currentIndex)->getAttributeCounter() == NULL) {
+			deletedCounter += 1;
+		}
+		if (currentIndex < T) {
+			return data + index + deletedCounter;
 		}
 		else {
 			return data;
@@ -115,8 +119,9 @@ public:
 		while (tmp->getPreviousNode() != nullptr) {
 			tmp = tmp->getPreviousNode();
 			tmp->getNextNode()->~ListNode();
+			tmp->setNextNode(nullptr);
 		}
-		return tmp; //returns last node left
+		return tmp;
 	}
 	void deleteNode() {
 		if (this->getPreviousNode() != nullptr) {

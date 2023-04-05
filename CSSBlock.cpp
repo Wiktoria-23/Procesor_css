@@ -23,16 +23,14 @@ void CSSBlock::setFirstAttribute(ListNode<Attribute>* newFirstAttribute) {
 	this->firstAttribute = newFirstAttribute;
 }
 void CSSBlock::deleteAllData() {
-	ListNode<MyString>* tmp = firstSelector->getLastNode();
-	tmp = tmp->deleteAllNextNodes();
-	tmp->getData()->makeEmpty();
-	tmp->getData()->changeText(DELETED);//poprawiæ usuwanie
+	firstSelector = firstSelector->deleteAllNextNodes();
+	firstSelector->getData()->makeEmpty();
+	firstSelector->getData()->changeText(DELETED);
 	selectorCounter = 0;
-	ListNode<Attribute>* tmp2 = firstAttribute->getLastNode();//ostatni atrybut nie ma nullptr - problem z usuwaniem atrybutu
 	if (attributeCounter > 0) {
-		tmp2 = tmp2->deleteAllNextNodes();
-		tmp2->getData()->getKey().changeText(DELETED);
-		tmp2->getData()->getValue().changeText(DELETED);
+		firstAttribute = firstAttribute->deleteAllNextNodes();
+		firstAttribute->getData()->getKey().changeText(DELETED);
+		firstAttribute->getData()->getValue().changeText(DELETED);
 	}
 	attributeCounter = 0;
 }

@@ -155,10 +155,11 @@ int countAttribute(MyString& attributeName, ListNode<CSSBlock>& currentNode) {
 	while (tmp != nullptr) {
 		for (int i = 0; i < tmp->getCounter(); i++) {
 			CSSBlock* currentBlock = tmp->getDataFromIndex(i);
-			ListNode<Attribute>* currentAttribute = tmp->getDataFromIndex(i)->getFirstAttribute();
+			ListNode<Attribute>* currentAttribute = currentBlock->getFirstAttribute();
 			while (currentBlock->getSelectorCounter() != NULL && currentAttribute != nullptr) {
 				if (currentAttribute->getData()->getKey() == attributeName) {
 					counter += 1;
+					break;
 				}
 				currentAttribute = currentAttribute->getNextNode();
 			}
@@ -245,7 +246,7 @@ bool checkRepeatingChars(MyString& input, char toFind) {
 	return true;
 }
 
-void checkIfSelectorIsSaved(ListNode<CSSBlock>& currentNode) {
+void checkIfAnySelectorIsSaved(ListNode<CSSBlock>& currentNode) {
 	if (currentNode.getCurrentIndexData()->getFirstSelector()->getCurrentIndexData()->getLength() == 1) {
 		MyString toWrite(1);
 		toWrite.addCharacter('\0');
@@ -266,15 +267,29 @@ bool checkCommas(MyString& input) {
 	return false;
 }
 
-void checkInput(MyString& input) {
-	if (input.getText()[input.getLength() - 2] == SPACE || input.getText()[input.getLength() - 2] == NEW_LINE || input.getText()[input.getLength() - 2] == TAB) { //last place in text is '\0'
-		input.getText()[input.getLength() - 2] = '\0';
-		input.setLength(input.getLength() - 1);
+MyString& checkInput(MyString& input) {
+	//if (input.getText()[input.getLength() - 2] == SPACE || input.getText()[input.getLength() - 2] == NEW_LINE || input.getText()[input.getLength() - 2] == TAB) { //last place in text is '\0'
+	//	input.getText()[input.getLength() - 2] = '\0';
+	//	input.setLength(input.getLength() - 1);
+	//}
+	int start = NULL;
+	while (input[start] <= SPACE) {
+		start += 1;
 	}
+	int end = input.getLength() - 1;
+	while ((input[end] <= SPACE)) {
+		end -= 1;
+	}
+	int newLength = end - start + 1;
+	MyString* cleanInput = new MyString(newLength + 1);
+	for (int i = 0; i < end + 1; i++) {
+		cleanInput->setChar(input[i + start], i);
+	}
+	return *cleanInput;
 }
 
 void addSelector(MyString& input, ListNode<CSSBlock>& currentNode) {
-	checkInput(input);
+	input = checkInput(input);
 	if (currentNode.getCurrentIndexData()->getFirstSelector()->getLastNode()->getCurrentIndexData()->getLength() != 1) {
 		ListNode<MyString>* newSelector = new ListNode<MyString>;
 		newSelector->setPreviousNode(currentNode.getCurrentIndexData()->getFirstSelector()->getLastNode());
@@ -286,7 +301,7 @@ void addSelector(MyString& input, ListNode<CSSBlock>& currentNode) {
 }
 
 void addAttributeKey(MyString& input, ListNode<CSSBlock>& currentNode) {
-	checkInput(input);
+	input = checkInput(input);
 	if (currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode()->getCurrentIndexData()->getKey().getLength() != 1) {
 		ListNode<Attribute>* newAttribute = new ListNode<Attribute>;
 		newAttribute->setPreviousNode(currentNode.getCurrentIndexData()->getFirstAttribute()->getLastNode());
@@ -298,7 +313,7 @@ void addAttributeKey(MyString& input, ListNode<CSSBlock>& currentNode) {
 }
 
 void addAttributeValue(MyString& input, ListNode<Attribute>& currentNode) {
-	checkInput(input);
+	input = checkInput(input);
 	currentNode.getData()->getValue().changeText(input);
 	input.makeEmpty();
 }
@@ -397,16 +412,28 @@ bool checkIfAttributeIsSaved(MyString& input, ListNode<CSSBlock>& currentNode) {
 	return false;
 }
 
+bool selectorNotSaved(ListNode<CSSBlock>& currentNode, MyString& input) {
+	ListNode<MyString>* tmp = currentNode.getCurrentIndexData()->getFirstSelector();
+	while (tmp != nullptr) {
+		if (*tmp->getData() == input) {
+			return false;
+		}
+		tmp = tmp->getNextNode();
+	}
+	return true;
+}
+
 programState getSelectors(char character, MyString& input, ListNode<CSSBlock>* currentNode, programState currentState) {
 	if ((character == COMMA || character == ATTRIBUTES_START) && input.getLength() > 1) {
-		checkInput(input);
-		addSelector(input, *currentNode);
+		if (selectorNotSaved(*currentNode, input)) {
+			addSelector(input, *currentNode);
+		}
 	}
 	else if (character != ATTRIBUTES_START && character != NEW_LINE && character != TAB) {
 		input.addCharacter(character);
 	}
 	if (character == ATTRIBUTES_START) {
-		checkIfSelectorIsSaved(*currentNode);
+		checkIfAnySelectorIsSaved(*currentNode);
 		currentState = GET_ATTRIBUTES;
 	}
 	return currentState;
@@ -416,7 +443,7 @@ programState getAttributes(char character, MyString& input, ListNode<CSSBlock>* 
 	static bool attributeToOverwrite;
 	static MyString attributeName;
 	if (character == COLON && input.getLength() > 1) {
-		checkInput(input);
+		input = checkInput(input);
 		if (!checkIfAttributeIsSaved(input, *currentNode)) {
 			addAttributeKey(input, *currentNode);
 			attributeToOverwrite = false;
@@ -428,7 +455,7 @@ programState getAttributes(char character, MyString& input, ListNode<CSSBlock>* 
 		}
 	}
 	else if ((character == SEMICOLON || character == ATTRIBUTES_END) && input.getLength() > 1) {
-		checkInput(input);
+		input = checkInput(input);
 		ListNode<Attribute>* tmp = currentNode->getLastNode()->getCurrentIndexData()->getFirstAttribute()->getLastNode();
 		if (attributeToOverwrite) {
 			tmp = currentNode->getLastNode()->getCurrentIndexData()->getFirstAttribute();
@@ -449,7 +476,7 @@ programState getAttributes(char character, MyString& input, ListNode<CSSBlock>* 
 }
 
 programState getCommands(char character, MyString& input, ListNode<CSSBlock>* currentNode, programState currentState) {
-	if (character != NEW_LINE && character != SPACE) {
+	if (character != NEW_LINE) {
 		input.addCharacter(character);
 	}
 	if (character == NEW_LINE) {
@@ -482,6 +509,9 @@ programState getCommands(char character, MyString& input, ListNode<CSSBlock>* cu
 		}
 		else if (input.getCharacter(NULL) == QUESTION_MARK) {
 			cout << "? == " << countSections(currentNode) << endl;
+			input.makeEmpty();
+		}
+		else {
 			input.makeEmpty();
 		}
 	}
