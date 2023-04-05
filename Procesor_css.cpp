@@ -281,6 +281,7 @@ MyString& checkInput(MyString& input) {
 	for (int i = 0; i < end + 1; i++) {
 		cleanInput->setChar(input[i + start], i);
 	}
+	//delete input???
 	return *cleanInput;
 }
 
@@ -338,20 +339,21 @@ void findLastValue(MyString& attributeName, MyString& selectorName, ListNode<CSS
 }
 
 void chooseCommandWithName(MyString& input, int counter, ListNode<CSSBlock>& currentNode) {
-	MyString elementName = getElementName(input, NULL, counter + 1); //length has to be one char bigger
+	MyString* elementName = new MyString();
+	*elementName = getElementName(input, NULL, counter + 1); //length has to be one char bigger
 	if (input.getCharacter(SECOND_ARGUMENT_POSITION + counter) == ATTRIBUTE) {
 		if (input.getCharacter(THIRD_ARGUMENT_POSITION + counter) == QUESTION_MARK) {
-			cout << elementName << COMMA << ATTRIBUTE << COMMA << QUESTION_MARK << " == " << countAttribute(elementName, currentNode) << endl;
+			cout << *elementName << COMMA << ATTRIBUTE << COMMA << QUESTION_MARK << " == " << countAttribute(*elementName, currentNode) << endl;
 		}
 	}
 	else if (input.getCharacter(SECOND_ARGUMENT_POSITION + counter) == SELECTOR) {
 		if (input.getCharacter(THIRD_ARGUMENT_POSITION + counter) == QUESTION_MARK) {
-			cout << elementName << COMMA << SELECTOR << COMMA << QUESTION_MARK << " == " << countSelector(elementName, currentNode) << endl;
+			cout << *elementName << COMMA << SELECTOR << COMMA << QUESTION_MARK << " == " << countSelector(*elementName, currentNode) << endl;
 		}
 	}
 	else if (input.getCharacter(SECOND_ARGUMENT_POSITION + counter) == VALUE) {
 		MyString attributeName = getElementName(input, THIRD_ARGUMENT_POSITION + counter, input.getLength());
-		findLastValue(attributeName, elementName, currentNode);
+		findLastValue(attributeName, *elementName, currentNode);
 	}
 	input.makeEmpty();
 }
@@ -364,9 +366,10 @@ void chooseCommandWithNumber(MyString& input, int counter, ListNode<CSSBlock>& c
 			}
 		}
 		else {
-			MyString attributeName = getElementName(input, THIRD_ARGUMENT_POSITION + counter, input.getLength());
-			if (checkIfAttributeExist(attributeName, currentNode, number)) {
-				cout << number << COMMA << ATTRIBUTE << COMMA << attributeName << " == " << findAttributeValue(attributeName, currentNode, number) << endl;
+			MyString* attributeName = new MyString();
+			*attributeName = getElementName(input, THIRD_ARGUMENT_POSITION + counter, input.getLength());
+			if (checkIfAttributeExist(*attributeName, currentNode, number)) {
+				cout << number << COMMA << ATTRIBUTE << COMMA << *attributeName << " == " << findAttributeValue(*attributeName, currentNode, number) << endl;
 			}
 		}
 	}
@@ -389,8 +392,9 @@ void chooseCommandWithNumber(MyString& input, int counter, ListNode<CSSBlock>& c
 			deleteSection(number, currentNode);
 		}
 		else {
-			MyString attributeName = getElementName(input, THIRD_ARGUMENT_POSITION + counter, input.getLength());
-			deleteAttribute(number, attributeName, currentNode);
+			MyString* attributeName = new MyString();
+			*attributeName = getElementName(input, THIRD_ARGUMENT_POSITION + counter, input.getLength());
+			deleteAttribute(number, *attributeName, currentNode);
 		}
 	}
 	input.makeEmpty();

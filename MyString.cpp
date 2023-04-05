@@ -89,9 +89,6 @@ std::ostream& operator<< (std::ostream& ostr, MyString& text) {
 }
 MyString& MyString::operator=(MyString& otherString) {
 	length = otherString.getLength();
-	/*if (text != nullptr) {
-		delete[] text;
-	}*/
 	text = new char[length];
 	for (int i = 0; i < length - 1; i++) {
 		text[i] = otherString[i];
