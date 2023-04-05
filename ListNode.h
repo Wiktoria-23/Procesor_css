@@ -134,8 +134,8 @@ public:
 	~ListNode() {
 		next = nullptr;
 		previous = nullptr;
-		/*if (data != nullptr) {
+		if (data != nullptr) {
 			delete[] data;
-		}*/ //naprawic to, zeby dzialal test trzeci !!!
+		}
 	}
 };

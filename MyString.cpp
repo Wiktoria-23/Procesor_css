@@ -1,5 +1,6 @@
 #include "MyString.h"
 #include <iostream>
+#define END_OF_ARRAY '\0'
 
 MyString::MyString() {
 	this->length = 1;
@@ -29,7 +30,7 @@ void MyString::addCharacter(char character) {
 		tmp->text[i] = this->text[i];
 	}
 	tmp->text[length - 1] = character;
-	tmp->text[length] = '\0';
+	tmp->text[length] = END_OF_ARRAY;
 	*this = *tmp;
 	delete tmp;
 }
@@ -39,14 +40,14 @@ void MyString::changeText(MyString& otherText) {
 		delete[] text;
 	}
 	text = new char[length];
-	text[length - 1] = '\0';
+	text[length - 1] = END_OF_ARRAY;
 	for (int i = 0; i < length; i++) {
 		text[i] = otherText[i];
 	}
 }
 void MyString::changeText(const char* otherText) {
 	int newLength = 0;
-	while (otherText[newLength] != '\0') {
+	while (otherText[newLength] != END_OF_ARRAY) {
 		newLength++;
 	}
 	if (text != nullptr) {
@@ -56,12 +57,12 @@ void MyString::changeText(const char* otherText) {
 	for (int i = 0; i <= newLength; i++) {
 		this->getText()[i] = otherText[i];
 	}
-	this->getText()[newLength] = '\0';
+	this->getText()[newLength] = END_OF_ARRAY;
 }
 void MyString::makeEmpty() {
 	length = 1;
 	char* newText = new char[1];
-	newText[0] = '\0';
+	newText[0] = END_OF_ARRAY;
 	text = newText;
 	delete[] newText;
 }
@@ -95,7 +96,7 @@ MyString& MyString::operator=(MyString& otherString) {
 	for (int i = 0; i < length - 1; i++) {
 		text[i] = otherString[i];
 	}
-	text[length - 1] = '\0';
+	text[length - 1] = END_OF_ARRAY;
 	return *this;
 }
 bool MyString::operator==(MyString& otherString) {

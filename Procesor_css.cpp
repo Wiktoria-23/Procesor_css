@@ -17,6 +17,7 @@
 #define COMMA ','
 #define NEW_LINE '\n'
 #define TAB '\t'
+#define END_OF_ARRAY '\0'
 #define SEMICOLON ';'
 #define COLON ':'
 #define EMPTY ""
@@ -43,7 +44,7 @@ int getIndex(ListNode<CSSBlock>& currentNode, int number) {
 		number -= tmp->getCounter();
 		tmp = tmp->getNextNode();
 	}
-	return number - 1;
+	return number - 1; //indexes start from 0, not 1
 }
 
 bool checkIfAttributeExist(MyString& attribute, ListNode<CSSBlock>& currentNode, int index) {
@@ -61,7 +62,7 @@ bool checkIfSectionExist(ListNode<CSSBlock>& currentNode, int number) {
 	if (&currentNode != nullptr && currentNode.getFirstNode() != nullptr) {
 		ListNode<CSSBlock>* tmp = currentNode.getFirstNode()->findNodeByNumberT(number);
 		int index = getIndex(currentNode, number);
-		if (tmp != nullptr && tmp->getCounter() > index) { //counting in array starts from 0
+		if (tmp != nullptr && tmp->getCounter() > index) {
 			return true;
 		}
 	}
@@ -173,7 +174,7 @@ MyString& findAttributeValue(MyString& attribute, ListNode<CSSBlock>& currentNod
 	int index = getIndex(currentNode, number);
 	ListNode<Attribute>* node = currentNode.getFirstNode()->findNodeByNumberT(number)->getDataFromIndex(index)->getFirstAttribute();
 	while (node->getNextNode() != nullptr) {
-		if (node->getData()->getKey() == attribute) { //counting in array starts from 0
+		if (node->getData()->getKey() == attribute) {
 			break;
 		}
 		node = node->getNextNode();
@@ -248,7 +249,7 @@ bool checkRepeatingChars(MyString& input, char toFind) {
 void checkIfAnySelectorIsSaved(ListNode<CSSBlock>& currentNode) {
 	if (currentNode.getCurrentIndexData()->getFirstSelector()->getCurrentIndexData()->getLength() == 1) {
 		MyString toWrite(1);
-		toWrite.addCharacter('\0');
+		toWrite.addCharacter(END_OF_ARRAY);
 		currentNode.getCurrentIndexData()->getFirstSelector()->getCurrentIndexData()->changeText(toWrite);
 	}
 }
