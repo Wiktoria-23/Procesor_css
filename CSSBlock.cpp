@@ -1,5 +1,4 @@
 #include "CSSBlock.h"
-#define DELETED "DELETED"
 
 CSSBlock::CSSBlock() : selectorCounter(NULL), attributeCounter(NULL) {
 	firstSelector = new ListNode<MyString>;
@@ -25,12 +24,11 @@ void CSSBlock::setFirstAttribute(ListNode<Attribute>* newFirstAttribute) {
 void CSSBlock::deleteAllData() {
 	firstSelector = firstSelector->deleteAllNextNodes();
 	firstSelector->getData()->makeEmpty();
-	firstSelector->getData()->changeText(DELETED);
 	selectorCounter = 0;
 	if (attributeCounter > 0) {
 		firstAttribute = firstAttribute->deleteAllNextNodes();
-		firstAttribute->getData()->getKey().changeText(DELETED);
-		firstAttribute->getData()->getValue().changeText(DELETED);
+		firstAttribute->getData()->getKey().makeEmpty();
+		firstAttribute->getData()->getValue().makeEmpty();
 	}
 	attributeCounter = 0;
 }

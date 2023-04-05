@@ -35,6 +35,9 @@ void MyString::addCharacter(char character) {
 }
 void MyString::changeText(MyString& otherText) {
 	length = otherText.length;
+	if (text != nullptr) {
+		delete[] text;
+	}
 	text = new char[length];
 	text[length - 1] = '\0';
 	for (int i = 0; i < length; i++) {
@@ -45,6 +48,9 @@ void MyString::changeText(const char* otherText) {
 	int newLength = 0;
 	while (otherText[newLength] != '\0') {
 		newLength++;
+	}
+	if (text != nullptr) {
+		delete[] text;
 	}
 	text = new char[newLength + 1];
 	for (int i = 0; i <= newLength; i++) {

@@ -2,7 +2,6 @@
 #define T 8
 #define TEXT 1
 #include <iostream>
-#define DELETED "DELETED"
 
 template <typename type> class ListNode {
 private:

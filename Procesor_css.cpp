@@ -102,8 +102,8 @@ void deleteAttribute(int number, MyString& attributeName, ListNode<CSSBlock>& cu
 		tmp = tmp->getNextNode();
 	}
 	if (tmp->getNextNode() == nullptr && tmp->getPreviousNode() == nullptr) {
-		tmp->getData()->getKey().changeText(DELETED);
-		tmp->getData()->getValue().changeText(DELETED);
+		tmp->getData()->getKey().makeEmpty();
+		tmp->getData()->getValue().makeEmpty();
 	}
 	else {
 		if (tmp->getPreviousNode() == nullptr) {
@@ -267,10 +267,6 @@ bool checkCommas(MyString& input) {
 }
 
 MyString& checkInput(MyString& input) {
-	//if (input.getText()[input.getLength() - 2] == SPACE || input.getText()[input.getLength() - 2] == NEW_LINE || input.getText()[input.getLength() - 2] == TAB) { //last place in text is '\0'
-	//	input.getText()[input.getLength() - 2] = '\0';
-	//	input.setLength(input.getLength() - 1);
-	//}
 	int start = NULL;
 	while (input[start] <= SPACE) {
 		start += 1;
