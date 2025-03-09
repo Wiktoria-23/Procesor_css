@@ -1,5 +1,5 @@
 #pragma once
-#define T 8
+#define T 17
 #define TEXT 1
 #include <iostream>
 

@@ -34,7 +34,7 @@ void MyString::addCharacter(char character) {
 	*this = *tmp;
 	delete tmp;
 }
-void MyString::changeText(MyString& otherText) {
+void MyString::changeText(const MyString& otherText) {
 	length = otherText.length;
 	if (text != nullptr) {
 		delete[] text;

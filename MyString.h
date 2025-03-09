@@ -12,7 +12,7 @@ public:
 	MyString(MyString& otherString);
 	MyString(char* textToAdd, int length);
 	void addCharacter(char character);
-	void changeText(MyString& otherText);
+	void changeText(const MyString& otherText);
 	void changeText(const char* otherText);
 	void makeEmpty();
 	int getLength() const;
